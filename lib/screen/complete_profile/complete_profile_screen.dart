@@ -5,7 +5,14 @@ import 'components/body.dart';
 class CompleteProfileScreen extends StatelessWidget {
   static String routeName = "/complete_profile";
 
-  const CompleteProfileScreen({Key? key}) : super(key: key);
+  const CompleteProfileScreen({
+    Key? key,
+    required this.email,
+    required this.password,
+  }) : super(key: key);
+
+  final String email;
+  final String password;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +23,10 @@ class CompleteProfileScreen extends StatelessWidget {
           style: TextStyle(color: Colors.black),
         ),
       ),
-      body: Body(),
+      body: Body(
+        email: email,
+        password: password,
+      ),
     );
   }
 }

@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:mystore/components/coustom_bottom_nav_bar.dart';
 import 'package:mystore/enums.dart';
 import 'package:mystore/models/user.dart';
-import 'package:mystore/screen/home/home_screen.dart';
 
 import 'components/body.dart';
 
 class ProfileScreen extends StatefulWidget {
   static String routeName = "/profile";
 
-  ProfileScreen({Key? key, required this.user}) : super(key: key);
+  const ProfileScreen({Key? key, required this.user}) : super(key: key);
   final User user;
 
   @override

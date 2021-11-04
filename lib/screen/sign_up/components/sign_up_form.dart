@@ -1,5 +1,8 @@
 // ignore_for_file: use_key_in_widget_constructors, non_constant_identifier_names
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:mystore/components/custom_surfix_icon.dart';
 import 'package:mystore/components/default_button.dart';
@@ -17,10 +20,37 @@ class SignUpForm extends StatefulWidget {
 class _SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
   String? email;
+  TextEditingController emailController = TextEditingController();
+
   String? password;
+  TextEditingController passwordController = TextEditingController();
+
   String? conform_password;
   bool remember = false;
   final List<String> errors = [];
+
+  static const baseUrl = "https://mystore-backend.herokuapp.com";
+
+  Future<void> checkExistEmail(String email, String password) async {
+    var response = await http.post(Uri.parse("$baseUrl/api/users/check"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({"email": email.trim()}));
+
+    if (response.statusCode == 200) {
+      removeError(error: "This email is taken. Try another");
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CompleteProfileScreen(
+                    email: email,
+                    password: password,
+                  )));
+    } else {
+      addError(error: "This email is taken. Try another");
+    }
+  }
 
   void addError({String? error}) {
     if (!errors.contains(error)) {
@@ -49,6 +79,7 @@ class _SignUpFormState extends State<SignUpForm> {
           buildPasswordFormField(),
           SizedBox(height: getProportionateScreenHeight(30)),
           buildConformPassFormField(),
+          SizedBox(height: getProportionateScreenHeight(10)),
           FormError(errors: errors),
           SizedBox(height: getProportionateScreenHeight(40)),
           DefaultButton(
@@ -56,8 +87,7 @@ class _SignUpFormState extends State<SignUpForm> {
             press: () {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
-                // if all are valid then go to success screen
-                Navigator.pushNamed(context, CompleteProfileScreen.routeName);
+                checkExistEmail(emailController.text, passwordController.text);
               }
             },
           ),
@@ -100,20 +130,21 @@ class _SignUpFormState extends State<SignUpForm> {
   TextFormField buildPasswordFormField() {
     return TextFormField(
       obscureText: true,
+      controller: passwordController,
       onSaved: (newValue) => password = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
+      onChanged: (newValue) {
+        if (newValue.isNotEmpty) {
           removeError(error: kPassNullError);
-        } else if (value.length >= 8) {
+        } else if (newValue.length >= 3) {
           removeError(error: kShortPassError);
         }
-        password = value;
+        password = newValue;
       },
       validator: (value) {
         if (value!.isEmpty) {
           addError(error: kPassNullError);
           return "";
-        } else if (value.length < 8) {
+        } else if (value.length < 3) {
           addError(error: kShortPassError);
           return "";
         }
@@ -131,6 +162,7 @@ class _SignUpFormState extends State<SignUpForm> {
   TextFormField buildEmailFormField() {
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
+      controller: emailController,
       onSaved: (newValue) => email = newValue,
       onChanged: (value) {
         if (value.isNotEmpty) {

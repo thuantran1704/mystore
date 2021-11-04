@@ -1,3 +1,5 @@
+// ignore_for_file: curly_braces_in_flow_control_structures
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -45,6 +47,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
 
   String? country;
   TextEditingController countryController = TextEditingController();
+  // String? fullAddress;
 
   int paymentMethod = 1;
   double itemsprice = 0;
@@ -142,9 +145,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         timeInSecForIosWeb: 1);
   }
 
-  @override
-  void initState() {
-    super.initState();
+  void initScreen() {
     addressController =
         TextEditingController(text: widget.user.userAddress.address);
     cityController = TextEditingController(text: widget.user.userAddress.city);
@@ -152,11 +153,19 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         TextEditingController(text: widget.user.userAddress.country);
     postalCodeController =
         TextEditingController(text: widget.user.userAddress.postalCode);
+    // fullAddress =
+    //     "${addressController.text}, ${cityController.text}, ${countryController.text}, ${postalCodeController.text}";
     itemsprice = widget.total;
     taxPrice = double.parse((widget.total * 0.1).toStringAsFixed(2));
     itemsprice >= 100 ? shippingPrice = 0 : shippingPrice = 2;
     totalPrice = double.parse(
         (itemsprice + taxPrice + shippingPrice).toStringAsFixed(2));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initScreen();
   }
 
   @override
@@ -175,7 +184,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           width: double.infinity,
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: getProportionateScreenWidth(20)),
+                horizontal: getProportionateScreenWidth(18)),
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Form(
@@ -185,6 +194,123 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     SizedBox(height: SizeConfig.screenHeight * 0.01),
                     const CustomTitle(title: "Shipping Infomation"),
                     SizedBox(height: SizeConfig.screenHeight * 0.02),
+                    // Container(
+                    //   height: SizeConfig.screenHeight * 0.12,
+                    //   decoration: BoxDecoration(
+                    //     border: Border.all(color: Colors.black54),
+                    //     boxShadow: [
+                    //       BoxShadow(
+                    //           color: Colors.grey.shade200,
+                    //           blurRadius: 2.0,
+                    //           spreadRadius: 1.0),
+                    //     ],
+                    //     color: Colors.white,
+                    //     borderRadius: BorderRadius.circular(20.0),
+                    //   ),
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    //     child: Row(
+                    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //       crossAxisAlignment: CrossAxisAlignment.center,
+                    //       children: [
+                    //         Column(
+                    //           mainAxisAlignment: MainAxisAlignment.center,
+                    //           crossAxisAlignment: CrossAxisAlignment.start,
+                    //           children: [
+                    //             SizedBox(
+                    //               width: SizeConfig.screenWidth * 0.75,
+                    //               child: Text("$fullAddress"),
+                    //             )
+                    //           ],
+                    //         ),
+                    //         GestureDetector(
+                    //           onTap: () {
+                    //             showModalBottomSheet<void>(
+                    //               context: context,
+                    //               builder: (BuildContext context) {
+                    //                 return Container(
+                    //                   height: 700,
+                    //                   color: Colors.white,
+                    //                   child: Center(
+                    //                     child: Padding(
+                    //                       padding: EdgeInsets.only(
+                    //                         left:
+                    //                             getProportionateScreenWidth(18),
+                    //                         right:
+                    //                             getProportionateScreenWidth(18),
+                    //                       ),
+                    //                       child: Form(
+                    //                         key: _formKey,
+                    //                         child: Column(
+                    //                           mainAxisSize: MainAxisSize.min,
+                    //                           children: <Widget>[
+                    //                             addressFormInput(),
+                    //                             SizedBox(
+                    //                                 height: SizeConfig
+                    //                                         .screenHeight *
+                    //                                     0.03),
+                    //                             cityFormInput(),
+                    //                             SizedBox(
+                    //                                 height: SizeConfig
+                    //                                         .screenHeight *
+                    //                                     0.03),
+                    //                             countryFormInput(),
+                    //                             SizedBox(
+                    //                                 height: SizeConfig
+                    //                                         .screenHeight *
+                    //                                     0.03),
+                    //                             postalCodeFormInput(),
+                    //                             SizedBox(
+                    //                                 height: SizeConfig
+                    //                                         .screenHeight *
+                    //                                     0.02),
+                    //                             FormError(errors: errors),
+                    //                             SizedBox(
+                    //                               width:
+                    //                                   SizeConfig.screenWidth *
+                    //                                       0.89,
+                    //                               height:
+                    //                                   getProportionateScreenHeight(
+                    //                                       45),
+                    //                               child: ElevatedButton(
+                    //                                   child:
+                    //                                       const Text('Submit'),
+                    //                                   onPressed: () {
+                    //                                     if (_formKey
+                    //                                         .currentState!
+                    //                                         .validate()) {
+                    //                                       _formKey.currentState!
+                    //                                           .save();
+                    //                                       KeyboardUtil
+                    //                                           .hideKeyboard(
+                    //                                               context);
+                    //                                       setState(() {
+                    //                                         fullAddress =
+                    //                                             "${addressController.text}, ${cityController.text}, ${countryController.text}, ${postalCodeController.text}";
+                    //                                       });
+                    //                                       Navigator.pop(
+                    //                                           context);
+                    //                                     }
+                    //                                   }),
+                    //                             )
+                    //                           ],
+                    //                         ),
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //                 );
+                    //               },
+                    //             );
+                    //           },
+                    //           child: const Icon(
+                    //             Icons.chevron_right,
+                    //             color: kPrimaryColor,
+                    //           ),
+                    //         )
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
                     addressFormInput(),
                     SizedBox(height: SizeConfig.screenHeight * 0.03),
                     cityFormInput(),
@@ -194,6 +320,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     postalCodeFormInput(),
                     SizedBox(height: SizeConfig.screenHeight * 0.02),
                     FormError(errors: errors),
+
                     SizedBox(height: SizeConfig.screenHeight * 0.01),
                     const CustomTitle(title: "Payment Method "),
                     paymentMethodRadioButton(),
@@ -372,8 +499,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         labelText: "Address",
         hintText: "Enter your Address",
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon:
-            CustomSurfixIcon(svgIcon: "assets/icons/Location point.svg"),
+        // suffixIcon:
+        //     CustomSurfixIcon(svgIcon: "assets/icons/Location point.svg"),
       ),
     );
   }
@@ -399,8 +526,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         labelText: "City",
         hintText: "Enter your City",
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon:
-            CustomSurfixIcon(svgIcon: "assets/icons/Location point.svg"),
+        // suffixIcon:
+        //     CustomSurfixIcon(svgIcon: "assets/icons/Location point.svg"),
       ),
     );
   }
@@ -426,8 +553,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         labelText: "Country",
         hintText: "Enter your Country",
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon:
-            CustomSurfixIcon(svgIcon: "assets/icons/Location point.svg"),
+        // suffixIcon:
+        //     CustomSurfixIcon(svgIcon: "assets/icons/Location point.svg"),
       ),
     );
   }
@@ -453,8 +580,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         labelText: "PostalCode",
         hintText: "Enter your PostalCode",
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon:
-            CustomSurfixIcon(svgIcon: "assets/icons/Location point.svg"),
+        // suffixIcon:
+        //     CustomSurfixIcon(svgIcon: "assets/icons/Location point.svg"),
       ),
     );
   }

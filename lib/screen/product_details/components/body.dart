@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mystore/components/default_button.dart';
 import 'package:mystore/components/rounded_icon_btn.dart';
@@ -31,7 +33,7 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   int qty = 1;
-
+  TextEditingController qtyController = TextEditingController();
   void _showToast(String msg) {
     Fluttertoast.showToast(
         msg: msg,
@@ -46,6 +48,9 @@ class _BodyState extends State<Body> {
   final baseUrl = "https://mystore-backend.herokuapp.com";
 
   Future<void> addToCard(String id, int qty) async {
+    if (qty <= 0) {
+      qty = 1;
+    }
     var response = await http.post(Uri.parse("$baseUrl/api/users/cart/$id/add"),
         headers: <String, String>{
           'Authorization': 'Bearer ${widget.user.token}',
@@ -78,6 +83,7 @@ class _BodyState extends State<Body> {
   @override
   void initState() {
     getSameProducts(widget.product.brand.name);
+    qtyController.text = qty.toString();
     super.initState();
   }
 
@@ -134,22 +140,72 @@ class _BodyState extends State<Body> {
                                             qty != 1) {
                                           setState(() {
                                             qty--;
+                                            qtyController.text = qty.toString();
                                           });
                                         }
                                       },
                                     ),
                                     SizedBox(
-                                        width: getProportionateScreenWidth(15)),
-                                    Text(
-                                      qty.toString(),
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600,
+                                        width: getProportionateScreenWidth(5)),
+
+                                    SizedBox(
+                                      width: getProportionateScreenWidth(40),
+                                      height: getProportionateScreenWidth(33),
+                                      child: AutoSizeTextField(
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: <TextInputFormatter>[
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp(r'[0-9]')),
+                                          LengthLimitingTextInputFormatter(2),
+                                        ],
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          // isDense: true,
+                                          contentPadding:
+                                              EdgeInsets.only(left: 16),
+                                        ),
+                                        // onSaved: (newValue) => qty =
+                                        //     int.parse(newValue.toString()),
+                                        controller: qtyController,
+                                        onChanged: (value) {
+                                          if (value.isNotEmpty) {
+                                            setState(() {
+                                              qty =
+                                                  int.parse(qtyController.text);
+                                            });
+                                          } else {
+                                            setState(() {
+                                              qty = 1;
+                                              qtyController.text =
+                                                  qty.toString();
+                                            });
+                                          }
+                                          return;
+                                        },
+                                        // validator: (value) {
+                                        //   if (value!.isEmpty) {
+                                        //     setState(() {
+                                        //       qty = 1;
+                                        //       qtyController.text =
+                                        //           qty.toString();
+                                        //     });
+                                        //     return "Required Value";
+                                        //   }
+                                        //   return null;
+                                        // },
                                       ),
                                     ),
+
+                                    // Text(
+                                    //   qty.toString(),
+                                    //   style: const TextStyle(
+                                    //     fontSize: 16,
+                                    //     color: Colors.black,
+                                    //     fontWeight: FontWeight.w600,
+                                    //   ),
+                                    // ),
                                     SizedBox(
-                                        width: getProportionateScreenWidth(15)),
+                                        width: getProportionateScreenWidth(5)),
                                     RoundedIconBtn(
                                       iconData: Icons.add,
                                       press: () {
@@ -158,6 +214,7 @@ class _BodyState extends State<Body> {
                                                 widget.product.countInStock) {
                                           setState(() {
                                             qty++;
+                                            qtyController.text = qty.toString();
                                           });
                                         }
                                       },
@@ -185,7 +242,8 @@ class _BodyState extends State<Body> {
                                   if (widget.product.countInStock == 0) {
                                     _showToast("This product is out of stock");
                                   } else {
-                                    addToCard(widget.product.id, qty);
+                                    addToCard(widget.product.id,
+                                        int.parse(qtyController.text));
                                   }
                                 },
                               ),

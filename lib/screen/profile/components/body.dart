@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mystore/models/user.dart';
+import 'package:mystore/screen/my_account/my_account_screen.dart';
 import 'package:mystore/screen/orders_my/my_order_screen.dart';
 import 'package:mystore/screen/sign_in/sign_in_screen.dart';
 
@@ -24,7 +25,12 @@ class Body extends StatelessWidget {
           ProfileMenu(
             text: "My Account",
             icon: "assets/icons/User Icon.svg",
-            press: () => {},
+            press: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyAccountScreen(user: user)));
+            },
           ),
           ProfileMenu(
             text: "My Orders",
