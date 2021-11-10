@@ -1,8 +1,14 @@
-import 'dart:io';
+// ignore_for_file: avoid_print
 
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mystore/components/form_error.dart';
 import 'package:mystore/constants.dart';
@@ -47,10 +53,37 @@ class _BodyState extends State<Body> {
       final imageTemporary = File(image.path);
       setState(() {
         images.add(imageTemporary);
+        upload(imageTemporary);
       });
     } on PlatformException catch (e) {
       print("Failed to pick image : $e");
     }
+  }
+
+  Future upload(File file) async {
+    String fileName = file.path.split("/").last;
+    var fileImage = await dio.MultipartFile.fromFile(file.path,
+        filename: fileName,
+        contentType: MediaType(
+          "image",
+          "png",
+        ));
+    dio.FormData formData =
+        dio.FormData.fromMap({"file": fileImage, "type": "image/png"});
+    var dioRequest = dio.Dio();
+    var response = await dioRequest.post(
+        "https://mystore-backend.herokuapp.com/api/upload",
+        data: formData,
+        options: dio.Options(headers: {
+          'Authorization': 'Bearer ${widget.user.token}',
+          "Content-type": "multipart/form-data"
+        }));
+
+    if (response.statusCode == 200) {
+      final res = UploadImage.fromJson(response.data);
+
+      uploaded.add(res);
+    } else {}
   }
 
   Future<void> getBrands() async {
@@ -159,11 +192,10 @@ class _BodyState extends State<Body> {
                                             width: 100,
                                             height: 100,
                                             child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
                                               child: Image.file(
-
                                                 images[index],
-
                                               ),
                                             ),
                                           ),

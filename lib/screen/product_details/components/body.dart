@@ -230,10 +230,10 @@ class _BodyState extends State<Body> {
                         color: Colors.grey.shade200,
                         child: Padding(
                           padding: EdgeInsets.only(
-                              // left: getProportionateScreenHeight(10),
-                              // right: getProportionateScreenHeight(10),
-                              // bottom: getProportionateScreenWidth(10),
-                              ),
+                            left: getProportionateScreenHeight(10),
+                            right: getProportionateScreenHeight(10),
+                            bottom: getProportionateScreenWidth(10),
+                          ),
                           child: Column(
                             children: [
                               DefaultButton(

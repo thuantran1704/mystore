@@ -38,6 +38,8 @@ dependencies:
   flutter_slidable: ^0.6.0
   image_picker: ^0.8.4+4
   provider: ^6.0.1
+  dio: ^4.0.1
+  http_parser: ^4.0.0
   flutter:
     sdk: flutter
 
