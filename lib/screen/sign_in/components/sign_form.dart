@@ -8,11 +8,14 @@ import 'package:mystore/components/form_error.dart';
 import 'package:mystore/constants.dart';
 import 'package:mystore/helper/keyboard.dart';
 import 'package:mystore/models/user.dart';
+import 'package:mystore/screen/admin/dashboard/dashboard.dart';
 import 'package:mystore/screen/forgot_password/forgot_password_screen.dart';
 import 'package:mystore/screen/home/home_screen.dart';
+import 'package:mystore/screen/profile/profile_screen.dart';
 import 'package:mystore/screen/sign_in/components/custom_surfix_icon.dart';
 import 'package:mystore/size_config.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 // ignore: use_key_in_widget_constructors
 class SignForm extends StatefulWidget {
@@ -42,12 +45,21 @@ class _SignFormState extends State<SignForm> {
 
     if (response.statusCode == 200) {
       user = userFromJson(response.body);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomeScreen(
-                    user: user,
-                  )));
+      if (user.role.name.toLowerCase() == "admin") {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DashBoardScreen(
+                      user: user,
+                    )));
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomeScreen(
+                      user: user,
+                    )));
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -179,6 +191,11 @@ class _SignFormState extends State<SignForm> {
       decoration: const InputDecoration(
         labelText: "Email",
         hintText: "Enter your email",
+        // border: OutlineInputBorder(borderSide: BorderSide(color: Colors.teal)),
+        // focusedBorder: UnderlineInputBorder(
+        //   borderSide: BorderSide(color: kPrimaryColor),
+        // ),
+        // enabledBorder: InputBorder.none,
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: CustomSurfixIcon(svgIcon: "assets/icons/Mail.svg"),
       ),

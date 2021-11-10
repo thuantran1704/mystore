@@ -73,7 +73,10 @@ class _BodyState extends State<Body> {
                     ContinueButton(
                       text: "Continue",
                       press: () =>
-                          Navigator.pushNamed(context, SignInScreen.routeName),
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>  SignInScreen())),
                     ),
                     Spacer(),
                   ],

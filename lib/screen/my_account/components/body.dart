@@ -145,7 +145,7 @@ class _BodyState extends State<Body> {
                     minWidth: 0,
                     elevation: 0.5,
                     color: Colors.white,
-                    child: Icon(
+                    child: const Icon(
                       Icons.camera_alt_outlined,
                       color: kPrimaryColor,
                     ),

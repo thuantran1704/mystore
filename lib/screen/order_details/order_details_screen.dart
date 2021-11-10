@@ -31,7 +31,6 @@ class _OrderScreenState extends State<OrderScreen> {
   late Order order;
   var loading = false;
   final baseUrl = "https://mystore-backend.herokuapp.com";
-  // final baseUrl = "http://localhost:5000";
 
   Future<void> getOrderDetails() async {
     setState(() {

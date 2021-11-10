@@ -11,6 +11,10 @@ const kPrimaryGradientColor = LinearGradient(
 const kSecondaryColor = Color(0xFF979797);
 const kTextColor = Color(0xFF757575);
 
+const grey = Color.fromRGBO(148, 170, 220, 1);
+const bgColor = Color.fromRGBO(247, 251, 254, 1);
+const backgroudColor = Color(0xFF272D34);
+
 const kAnimationDuration = Duration(milliseconds: 200);
 
 final headingStyle = TextStyle(
@@ -19,7 +23,7 @@ final headingStyle = TextStyle(
   color: Colors.black,
   height: 1.5,
 );
-
+const appPadding = 16.0;
 const defaultDuration = Duration(milliseconds: 250);
 
 // Form Error
@@ -36,6 +40,10 @@ const String kAddressNullError = "Please Enter your Address";
 const String kCountryNullError = "Please Enter your Country";
 const String kCityNullError = "Please Enter your City";
 const String kPostalCodeNullError = "Please Enter your Postal Code";
+
+const String kProductNameNullError = "Please Enter Name";
+const String kProductDescriptionNullError = "Please Enter Description";
+const String kProductPriceError = "Please Enter Price";
 
 final otpInputDecoration = InputDecoration(
   contentPadding:

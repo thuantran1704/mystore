@@ -70,7 +70,10 @@ class CustomBottomNavBar extends StatelessWidget {
                 onPressed: () {},
               ),
               IconButton(
-                icon: SvgPicture.asset("assets/icons/Cart Icon.svg"),
+                icon: SvgPicture.asset("assets/icons/Cart Icon.svg",
+                  color: MenuState.cart == selectedMenu
+                      ? kPrimaryColor
+                      : inActiveIconColor,),
                 onPressed: () {
                   if (currentPage != 3) {
                     Navigator.pushAndRemoveUntil(

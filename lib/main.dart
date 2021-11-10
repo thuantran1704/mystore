@@ -3,6 +3,7 @@ import 'package:mystore/routes.dart';
 import 'package:mystore/screen/spash/splash_screen.dart';
 import 'package:mystore/theme.dart';
 
+
 void main() => runApp(MyApp());
 
 // ignore: use_key_in_widget_constructors
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
       // home: const SplashScreen(),
       initialRoute: SplashScreen.routeName,
       routes: routes,
+
     );
   }
 }

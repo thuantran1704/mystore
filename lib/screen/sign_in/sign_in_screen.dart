@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mystore/constants.dart';
+import 'package:mystore/screen/admin/dashboard/components/drawer_menu.dart';
 import 'package:mystore/screen/sign_in/components/body.dart';
 
 // ignore: use_key_in_widget_constructors
@@ -8,6 +10,7 @@ class SignInScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         centerTitle: true,
         title: const Text(
           "Sign In",
