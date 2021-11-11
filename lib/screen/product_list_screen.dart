@@ -39,8 +39,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   @override
   void initState() {
-    super.initState();
     _fetchData();
+    super.initState();
   }
 
   @override

@@ -95,7 +95,7 @@ class _BodyState extends State<Body> {
                         key: Key(list[index].id.toString()),
                         controller: slidableController,
                         direction: Axis.horizontal,
-                        actionPane: SlidableScrollActionPane(),
+                        actionPane: const SlidableScrollActionPane(),
                         actionExtentRatio: 0.25,
                         child: VerticalListItem(
                           product: list[index],
@@ -111,7 +111,7 @@ class _BodyState extends State<Body> {
                             caption: 'Delete',
                             color: const Color(0xFFFFE6E6),
                             icon: Icons.delete,
-                            onTap: () => {},
+                            onTap: () => {list.removeAt(index)},
                           ),
                         ],
                       ),

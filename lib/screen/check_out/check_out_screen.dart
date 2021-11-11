@@ -12,7 +12,6 @@ import 'package:mystore/models/user.dart';
 import 'package:mystore/screen/check_out/components/custom_title.dart';
 import 'package:mystore/screen/check_out/components/order_item_card.dart';
 import 'package:mystore/screen/order_details/order_details_screen.dart';
-import 'package:mystore/screen/sign_in/components/custom_surfix_icon.dart';
 import 'package:mystore/size_config.dart';
 import 'package:http/http.dart' as http;
 

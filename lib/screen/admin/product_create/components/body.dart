@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, prefer_typing_uninitialized_variables, non_constant_identifier_names
 
 import 'dart:convert';
 import 'dart:io';
@@ -8,14 +8,18 @@ import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mystore/components/default_button.dart';
 import 'package:mystore/components/form_error.dart';
 import 'package:mystore/constants.dart';
+import 'package:mystore/helper/keyboard.dart';
 import 'package:mystore/models/brand.dart';
 import 'package:mystore/models/images.dart';
 import 'package:mystore/models/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:mystore/screen/admin/product_list/product_list.dart';
 import 'package:mystore/size_config.dart';
 
 class Body extends StatefulWidget {
@@ -36,9 +40,9 @@ class _BodyState extends State<Body> {
 
   final _formKey = GlobalKey<FormState>();
   final List<String> errors = [];
-  TextEditingController addressController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
 
   List<Brand> listBrand = [];
   List<Brand> listCate = [];
@@ -86,6 +90,52 @@ class _BodyState extends State<Body> {
     } else {}
   }
 
+  Future<void> createProduct(
+    List images,
+    String? name,
+    String? description,
+    double price,
+    String? brandId,
+    String? cateId,
+  ) async {
+    List jsonList = [];
+    images.map((item) => jsonList.add(item.toJson())).toList();
+
+    var response = await http.post(Uri.parse("$baseUrl/api/products"),
+        headers: <String, String>{
+          'Authorization': 'Bearer ${widget.user.token}',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          "images": jsonList,
+          "name": name,
+          "description": description,
+          "price": price,
+          "brand": brandId,
+          "category": cateId,
+          "countInStock": 0,
+        }));
+
+    if (response.statusCode == 201) {
+      _showToast("Product created successfully ");
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => (ProductListScreen(user: widget.user))));
+    } else {
+      _showToast("Product created failed");
+    }
+  }
+
+  void _showToast(String msg) {
+    Fluttertoast.showToast(
+        msg: msg,
+        fontSize: 15,
+        gravity: ToastGravity.BOTTOM,
+        toastLength: Toast.LENGTH_LONG,
+        timeInSecForIosWeb: 1);
+  }
+
   Future<void> getBrands() async {
     setState(() {
       loading = true;
@@ -123,17 +173,19 @@ class _BodyState extends State<Body> {
   }
 
   void addError({required String error}) {
-    if (!errors.contains(error))
+    if (!errors.contains(error)) {
       setState(() {
         errors.add(error);
       });
+    }
   }
 
   void removeError({required String error}) {
-    if (errors.contains(error))
+    if (errors.contains(error)) {
       setState(() {
         errors.remove(error);
       });
+    }
   }
 
   @override
@@ -166,6 +218,9 @@ class _BodyState extends State<Body> {
                 child: Form(
                   key: _formKey,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       NameFormInput(),
                       SizedBox(height: SizeConfig.screenHeight * 0.03),
@@ -179,7 +234,9 @@ class _BodyState extends State<Body> {
                       SizedBox(height: SizeConfig.screenHeight * 0.03),
                       Column(
                         children: [
-                          const Text("Product Images:"),
+                          const Text("Product Images:",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w700)),
                           Container(
                             child: (images.isNotEmpty)
                                 ? SingleChildScrollView(
@@ -189,8 +246,8 @@ class _BodyState extends State<Body> {
                                         ...List.generate(
                                           images.length,
                                           (index) => SizedBox(
-                                            width: 100,
-                                            height: 100,
+                                            width: 120,
+                                            height: 120,
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(8.0),
@@ -211,8 +268,8 @@ class _BodyState extends State<Body> {
                                               BorderRadius.circular(20),
                                           child: SvgPicture.asset(
                                             "assets/icons/Add_image.svg",
-                                            height: 100,
-                                            width: 100,
+                                            height: 120,
+                                            width: 120,
                                             color: Colors.lightBlue,
                                           ),
                                         ),
@@ -226,13 +283,49 @@ class _BodyState extends State<Body> {
                                     borderRadius: BorderRadius.circular(20),
                                     child: SvgPicture.asset(
                                       "assets/icons/Add_image.svg",
-                                      height: 100,
-                                      width: 100,
+                                      height: 120,
+                                      width: 120,
                                       color: Colors.lightBlue,
                                     ),
                                   ),
                           )
                         ],
+                      ),
+                      SizedBox(height: SizeConfig.screenHeight * 0.03),
+                      Container(
+                        child: SafeArea(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: getProportionateScreenWidth(250),
+                                    child: DefaultButton(
+                                      text: "Create Product",
+                                      press: () {
+                                        if (_formKey.currentState!.validate()) {
+                                          _formKey.currentState!.save();
+                                          KeyboardUtil.hideKeyboard(context);
+                                          createProduct(
+                                            uploaded,
+                                            nameController.text,
+                                            descriptionController.text,
+                                            double.parse(priceController.text),
+                                            dropdownBrandValue.toString(),
+                                            dropdownCateValue.toString(),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       )
                     ],
                   ),
@@ -244,7 +337,7 @@ class _BodyState extends State<Body> {
 
   TextFormField NameFormInput() {
     return TextFormField(
-      controller: addressController,
+      controller: nameController,
       // onSaved: (newValue) => address = newValue,
       minLines: 1,
       maxLines: 2,
@@ -349,7 +442,7 @@ class _BodyState extends State<Body> {
               children: [
                 const Text(
                   "Brand: ",
-                  style: TextStyle(color: Colors.black, fontSize: 16),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                 ),
                 Container(
                   padding:
@@ -396,7 +489,7 @@ class _BodyState extends State<Body> {
               children: [
                 const Text(
                   "Category: ",
-                  style: TextStyle(color: Colors.black, fontSize: 16),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                 ),
                 Container(
                   padding:

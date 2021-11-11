@@ -3,6 +3,7 @@ import 'package:mystore/constants.dart';
 import 'package:mystore/models/user.dart';
 import 'package:mystore/screen/admin/dashboard/components/drawer_list_tile.dart';
 import 'package:mystore/screen/admin/dashboard/dashboard.dart';
+import 'package:mystore/screen/admin/order_list/order_list.dart';
 import 'package:mystore/screen/admin/product_list/product_list.dart';
 import 'package:mystore/screen/sign_in/sign_in_screen.dart';
 
@@ -36,7 +37,7 @@ class DrawerMenu extends StatelessWidget {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>  DashBoardScreen(user: user)));
+                          builder: (context) => DashBoardScreen(user: user)));
                 }
               }),
           DrawerListTile(
@@ -53,7 +54,7 @@ class DrawerMenu extends StatelessWidget {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>  ProductListScreen(user: user)));
+                          builder: (context) => ProductListScreen(user: user)));
                 }
               }),
           DrawerListTile(
@@ -75,7 +76,14 @@ class DrawerMenu extends StatelessWidget {
                       fontWeight: FontWeight.bold)
                   : const TextStyle(color: grey),
               svgSrc: 'assets/icons/Pages.svg',
-              tap: () {}),
+              tap: () {
+                if (currentScreen != "order") {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => OrdertListScreen(user: user)));
+                }
+              }),
           DrawerListTile(
               style: (currentScreen == "receipts")
                   ? const TextStyle(
