@@ -133,19 +133,10 @@ class _BodyState extends State<Body> {
                                                 ),
                                               ),
                                               (list[index].status == 1)
-                                                  ? (list[index]
-                                                              .paymentMethod ==
-                                                          "ShipCOD")
-                                                      ? const StatusMyOrdersCard(
-                                                          status:
-                                                              "Waitting for Confirm",
-                                                          color:
-                                                              Colors.blueAccent)
-                                                      : const StatusMyOrdersCard(
-                                                          status:
-                                                              "Waitting for Payment",
-                                                          color:
-                                                              Colors.blueAccent)
+                                                  ? const StatusMyOrdersCard(
+                                                      status:
+                                                          "Waitting for Payment",
+                                                      color: Colors.blueAccent)
                                                   : (list[index].status == 2)
                                                       ? const StatusMyOrdersCard(
                                                           status:

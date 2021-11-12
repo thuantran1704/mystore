@@ -6,6 +6,7 @@ import 'package:mystore/constants.dart';
 import 'package:mystore/models/order.dart';
 import 'package:http/http.dart' as http;
 import 'package:mystore/models/user.dart';
+import 'package:mystore/screen/admin/order_list/order_list.dart';
 import 'package:mystore/screen/order_details/components/order_items.dart';
 import 'package:mystore/screen/order_details/components/order_status.dart';
 import 'package:mystore/screen/order_details/components/shipping_info.dart';
@@ -69,7 +70,29 @@ class _OrderScreenState extends State<OrderScreen> {
               builder: (context) =>
                   OrderScreen(orderId: widget.orderId, user: widget.user)));
     } else {
-      throw Exception('Unable to fetch products from the REST API');
+      throw Exception('Unable to update order from the REST API');
+    }
+  }
+
+  Future<void> markAsDelivery() async {
+    setState(() {
+      loading = true;
+    });
+    final response = await http.put(
+        Uri.parse("$baseUrl/api/orders/${widget.orderId}/deliver"),
+        headers: {
+          'Authorization': 'Bearer ${widget.user.token}',
+          "Accept": "application/json"
+        });
+
+    if (response.statusCode == 200) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  OrderScreen(orderId: widget.orderId, user: widget.user)));
+    } else {
+      throw Exception('Unable to update order from the REST API');
     }
   }
 
@@ -91,7 +114,7 @@ class _OrderScreenState extends State<OrderScreen> {
               builder: (context) =>
                   OrderScreen(orderId: widget.orderId, user: widget.user)));
     } else {
-      throw Exception('Unable to fetch products from the REST API');
+      throw Exception('Unable to update order from the REST API');
     }
   }
 
@@ -137,12 +160,27 @@ class _OrderScreenState extends State<OrderScreen> {
         ),
         leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () => Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MyOrders(user: widget.user)),
-                  (Route<dynamic> route) => false,
-                )),
+            onPressed: () => {
+                  if (widget.user.role.name.toLowerCase() == "admin")
+                    {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                OrdertListScreen(user: widget.user)),
+                        (Route<dynamic> route) => false,
+                      )
+                    }
+                  else
+                    {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MyOrders(user: widget.user)),
+                        (Route<dynamic> route) => false,
+                      )
+                    }
+                }),
       ),
       // ============================ body ===========================//
       body: Container(
@@ -245,7 +283,8 @@ class _OrderScreenState extends State<OrderScreen> {
                         SizedBox(
                           width: getProportionateScreenWidth(300),
                           child: (order.status == 1 &&
-                                  order.paymentMethod.toLowerCase() == "paypal")
+                                  widget.user.role.name.toLowerCase() !=
+                                      "admin")
                               ? Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -360,9 +399,9 @@ class _OrderScreenState extends State<OrderScreen> {
                                     ),
                                   ],
                                 )
-                              : (order.status == 1 &&
-                                      order.paymentMethod.toLowerCase() ==
-                                          "shipcod")
+                              : (order.status == 2 &&
+                                      widget.user.role.name.toLowerCase() !=
+                                          "admin")
                                   ? DefaultButton(
                                       text: "Cancel",
                                       press: () => showDialog(
@@ -388,9 +427,11 @@ class _OrderScreenState extends State<OrderScreen> {
                                                           }),
                                                 ],
                                               )))
-                                  : (order.status == 3)
+                                  : (order.status == 2 &&
+                                          widget.user.role.name.toLowerCase() ==
+                                              "admin")
                                       ? DefaultButton(
-                                          text: "Mark as Received",
+                                          text: "Mark as Delivery",
                                           press: () => showDialog(
                                               context: context,
                                               builder: (BuildContext context) =>
@@ -398,28 +439,62 @@ class _OrderScreenState extends State<OrderScreen> {
                                                     title:
                                                         const Text("Confirm"),
                                                     content: const Text(
-                                                        "If you confirm received, this order will complete and can not refund !"),
+                                                        "Are you sure to mark delivery this order?"),
                                                     actions: <Widget>[
                                                       TextButton(
                                                         onPressed: () =>
                                                             Navigator.pop(
-                                                                context,
-                                                                'Cancel'),
-                                                        child: const Text(
-                                                            'Cancel'),
+                                                                context, 'No'),
+                                                        child: const Text('No'),
                                                       ),
                                                       TextButton(
                                                           child:
-                                                              const Text('OK'),
+                                                              const Text('Yes'),
                                                           onPressed: () => {
                                                                 Navigator.pop(
                                                                     context,
-                                                                    'OK'),
-                                                                markAsReceived(),
+                                                                    'Yes'),
+                                                                markAsDelivery(),
                                                               }),
                                                     ],
                                                   )))
-                                      : null,
+                                      : (order.status == 3 &&
+                                              widget.user.role.name
+                                                      .toLowerCase() !=
+                                                  "admin")
+                                          ? DefaultButton(
+                                              text: "Mark as Received",
+                                              press: () => showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          AlertDialog(
+                                                            title: const Text(
+                                                                "Confirm"),
+                                                            content: const Text(
+                                                                "If you confirm received, this order will complete and can not refund !"),
+                                                            actions: <Widget>[
+                                                              TextButton(
+                                                                onPressed: () =>
+                                                                    Navigator.pop(
+                                                                        context,
+                                                                        'Cancel'),
+                                                                child: const Text(
+                                                                    'Cancel'),
+                                                              ),
+                                                              TextButton(
+                                                                  child:
+                                                                      const Text(
+                                                                          'OK'),
+                                                                  onPressed:
+                                                                      () => {
+                                                                            Navigator.pop(context,
+                                                                                'OK'),
+                                                                            markAsReceived(),
+                                                                          }),
+                                                            ],
+                                                          )))
+                                          : null,
                         ),
                       ],
                     ),

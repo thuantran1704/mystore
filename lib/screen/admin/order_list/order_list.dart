@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mystore/constants.dart';
 import 'package:mystore/models/user.dart';
 import 'package:mystore/screen/admin/dashboard/components/drawer_menu.dart';
 import 'package:mystore/screen/admin/order_list/components/body.dart';
@@ -15,7 +16,7 @@ class _OrdertListScreenState extends State<OrdertListScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 1,
+      length: 6,
       child: Scaffold(
         appBar: buildAppBar(),
         drawer: DrawerMenu(
@@ -30,19 +31,18 @@ class _OrdertListScreenState extends State<OrdertListScreen> {
   AppBar buildAppBar() {
     return AppBar(
       elevation: 0,
-      backgroundColor: Colors.transparent,
+      backgroundColor: backgroudColor,
+      iconTheme: const IconThemeData(color: Colors.white),
+      centerTitle: true,
       title: const Text(
         "Order Management",
-        style: TextStyle(
-            fontSize: 18,
-            //color: AppColors.baseBlackColor,
-            fontWeight: FontWeight.bold),
+        style: TextStyle(color: Colors.white),
       ),
       bottom: TabBar(
         labelPadding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
         indicator: BoxDecoration(
           borderRadius: BorderRadius.circular(25.0),
-          color: Colors.deepPurple,
+          color: kPrimaryColor,
         ),
         isScrollable: true,
         indicatorSize: TabBarIndicatorSize.tab,
@@ -50,15 +50,15 @@ class _OrdertListScreenState extends State<OrdertListScreen> {
           fontSize: 14,
           fontWeight: FontWeight.bold,
         ),
-        unselectedLabelColor: Colors.grey,
+        unselectedLabelColor: Colors.white,
         labelColor: Colors.white,
         tabs: const [
           Text("All", style: TextStyle(fontSize: 16)),
-          // Text("Pay", style: TextStyle(fontSize: 16)),
-          // Text("Wait", style: TextStyle(fontSize: 16)),
-          // Text("Delivery", style: TextStyle(fontSize: 16)),
-          // Text("Complete", style: TextStyle(fontSize: 16)),
-          // Text("Cancel", style: TextStyle(fontSize: 16)),
+          Text("Pay", style: TextStyle(fontSize: 16)),
+          Text("Wait", style: TextStyle(fontSize: 16)),
+          Text("Delivery", style: TextStyle(fontSize: 16)),
+          Text("Complete", style: TextStyle(fontSize: 16)),
+          Text("Cancel", style: TextStyle(fontSize: 16)),
         ],
       ),
     );
