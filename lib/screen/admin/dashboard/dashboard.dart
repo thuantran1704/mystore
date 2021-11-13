@@ -33,7 +33,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         currentScreen: "dashboard",
         user: widget.user,
       ),
-      body: const Body(),
+      body: Body(user: widget.user),
     );
   }
 }

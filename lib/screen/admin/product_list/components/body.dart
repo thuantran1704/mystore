@@ -212,6 +212,31 @@ class _ProductItemCardState extends State<ProductItemCard> {
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ),
+                  (widget.product.countInStock != 0)
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                              right: getProportionateScreenWidth(18)),
+                          child: Text.rich(
+                            TextSpan(
+                              text:
+                                  "In stock : ${widget.product.countInStock.toString()}",
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(
+                              right: getProportionateScreenWidth(18)),
+                          child: const Text.rich(
+                            TextSpan(
+                              text: "Out of stock",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.redAccent),
+                            ),
+                          ),
+                        ),
                 ],
               ),
               const SizedBox(height: 5),

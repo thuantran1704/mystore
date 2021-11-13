@@ -27,13 +27,43 @@ class _BodyState extends State<Body> {
     });
     final response = await http.get(Uri.parse("$baseUrl/api/users"),
         headers: <String, String>{
-          'Authorization': 'Bearer ${widget.user.token}',
-          "Accept": "application/json"
+          'Authorization': 'Bearer ${widget.user.token}'
         });
 
     if (response.statusCode == 200) {
       setState(() {
         list = managerUserFromJson(response.body);
+        loading = false;
+      });
+    } else {
+      throw Exception('Unable to fetch users from the REST API');
+    }
+  }
+
+  Future<void> disableUser(String id) async {
+    setState(() {
+      loading = true;
+    });
+    final response =
+        await http.put(Uri.parse("$baseUrl/api/users/disable/$id"));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        loading = false;
+      });
+    } else {
+      throw Exception('Unable to fetch users from the REST API');
+    }
+  }
+
+  Future<void> enableUser(String id) async {
+    setState(() {
+      loading = true;
+    });
+    final response = await http.put(Uri.parse("$baseUrl/api/users/enable/$id"));
+
+    if (response.statusCode == 200) {
+      setState(() {
         loading = false;
       });
     } else {
@@ -118,14 +148,85 @@ class _BodyState extends State<Body> {
                                   //             )));
                                 },
                               ),
-                              IconSlideAction(
-                                caption: 'Disable',
-                                color: const Color(0xFFFFE6E6),
-                                icon: Icons.disabled_by_default_sharp,
-                                onTap: () => {
-                                  //
-                                },
-                              ),
+                              (list[index].isDisable == false)
+                                  ? IconSlideAction(
+                                      caption: 'Disable',
+                                      color: const Color(0xFFFFE6E6),
+                                      icon: Icons.disabled_by_default_sharp,
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                AlertDialog(
+                                                  title: const Text("Confirm"),
+                                                  content: const Text(
+                                                      "Are you sure you want to Disable this User?"),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              context, 'No'),
+                                                      child: const Text('No'),
+                                                    ),
+                                                    TextButton(
+                                                        child:
+                                                            const Text('Yes'),
+                                                        onPressed: () => {
+                                                              Navigator.pop(
+                                                                  context,
+                                                                  'Yes'),
+                                                              disableUser(
+                                                                  list[index]
+                                                                      .id),
+                                                              setState(() {
+                                                                list[index]
+                                                                        .isDisable =
+                                                                    true;
+                                                              }),
+                                                            }),
+                                                  ],
+                                                ));
+                                      },
+                                    )
+                                  : IconSlideAction(
+                                      caption: 'Enable',
+                                      color: Colors.greenAccent.shade100,
+                                      icon: Icons.check_box,
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                AlertDialog(
+                                                  title: const Text("Confirm"),
+                                                  content: const Text(
+                                                      "Are you sure you want to Enable this User?"),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              context, 'No'),
+                                                      child: const Text('No'),
+                                                    ),
+                                                    TextButton(
+                                                        child:
+                                                            const Text('Yes'),
+                                                        onPressed: () => {
+                                                              Navigator.pop(
+                                                                  context,
+                                                                  'Yes'),
+                                                              enableUser(
+                                                                  list[index]
+                                                                      .id),
+                                                              setState(() {
+                                                                list[index]
+                                                                        .isDisable =
+                                                                    false;
+                                                              }),
+                                                            }),
+                                                  ],
+                                                ));
+                                      },
+                                    ),
                             ],
                           ),
                         ),
@@ -271,13 +372,44 @@ class _UserTabViewByIsDisableState extends State<UserTabViewByIsDisable> {
     final response = await http.post(Uri.parse("$baseUrl/api/users/isdisable"),
         headers: <String, String>{
           'Authorization': 'Bearer ${widget.user.token}',
-          "Accept": "application/json"
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode({"isDisable": widget.isDisable}));
-    print("response.statusCode : " + response.statusCode.toString());
+
     if (response.statusCode == 200) {
       setState(() {
         list = managerUserFromJson(response.body);
+        loading = false;
+      });
+    } else {
+      throw Exception('Unable to fetch users from the REST API');
+    }
+  }
+
+  Future<void> disableUser(String id) async {
+    setState(() {
+      loading = true;
+    });
+    final response =
+        await http.put(Uri.parse("$baseUrl/api/users/disable/$id"));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        loading = false;
+      });
+    } else {
+      throw Exception('Unable to fetch users from the REST API');
+    }
+  }
+
+  Future<void> enableUser(String id) async {
+    setState(() {
+      loading = true;
+    });
+    final response = await http.put(Uri.parse("$baseUrl/api/users/enable/$id"));
+
+    if (response.statusCode == 200) {
+      setState(() {
         loading = false;
       });
     } else {
@@ -359,14 +491,77 @@ class _UserTabViewByIsDisableState extends State<UserTabViewByIsDisable> {
                               //             )));
                             },
                           ),
-                          IconSlideAction(
-                            caption: 'Disable',
-                            color: const Color(0xFFFFE6E6),
-                            icon: Icons.disabled_by_default_sharp,
-                            onTap: () => {
-                              //
-                            },
-                          ),
+                          (list[index].isDisable == false)
+                              ? IconSlideAction(
+                                  caption: 'Disable',
+                                  color: const Color(0xFFFFE6E6),
+                                  icon: Icons.disabled_by_default_sharp,
+                                  onTap: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            AlertDialog(
+                                              title: const Text("Confirm"),
+                                              content: const Text(
+                                                  "Are you sure you want to Disable this User?"),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          context, 'No'),
+                                                  child: const Text('No'),
+                                                ),
+                                                TextButton(
+                                                    child: const Text('Yes'),
+                                                    onPressed: () => {
+                                                          Navigator.pop(
+                                                              context, 'Yes'),
+                                                          disableUser(
+                                                              list[index].id),
+                                                          setState(() {
+                                                            list.removeAt(
+                                                                index);
+                                                          }),
+                                                        }),
+                                              ],
+                                            ));
+                                  },
+                                )
+                              : IconSlideAction(
+                                  caption: 'Enable',
+                                  color: Colors.greenAccent.shade100,
+                                  icon: Icons.check_box,
+                                  onTap: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            AlertDialog(
+                                              title: const Text("Confirm"),
+                                              content: const Text(
+                                                  "Are you sure you want to Enable this User? "),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          context, 'No'),
+                                                  child: const Text('No'),
+                                                ),
+                                                TextButton(
+                                                    child: const Text('Yes'),
+                                                    onPressed: () => {
+                                                          Navigator.pop(
+                                                              context, 'Yes'),
+                                                          enableUser(
+                                                              list[index].id),
+                                                          setState(() {
+                                                            list.removeAt(
+                                                                index);
+                                                          }),
+                                                        }),
+                                              ],
+                                            ));
+                                  },
+                                ),
                         ],
                       ),
                     ),

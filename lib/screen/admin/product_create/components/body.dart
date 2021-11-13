@@ -85,9 +85,10 @@ class _BodyState extends State<Body> {
 
     if (response.statusCode == 200) {
       final res = UploadImage.fromJson(response.data);
-
       uploaded.add(res);
-    } else {}
+    } else {
+      print("Failed to Upload images to Cloud");
+    }
   }
 
   Future<void> createProduct(

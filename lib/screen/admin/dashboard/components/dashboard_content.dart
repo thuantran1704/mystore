@@ -1,13 +1,16 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mystore/constants.dart';
 import 'package:mystore/models/dashboard.dart';
+import 'package:mystore/models/user.dart';
 import 'package:mystore/size_config.dart';
 import 'package:http/http.dart' as http;
 
 class Body extends StatefulWidget {
-  const Body({Key? key}) : super(key: key);
-
+  const Body({Key? key, required this.user}) : super(key: key);
+  final User user;
   @override
   State<Body> createState() => _BodyState();
 }
@@ -63,6 +66,48 @@ class _BodyState extends State<Body> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Padding(
+                padding: EdgeInsets.only(left: getProportionateScreenWidth(10)),
+                child: Text.rich(
+                  TextSpan(
+                    text: "Hi ${widget.user.name},",
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 35),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: getProportionateScreenWidth(10)),
+                child: Text.rich(
+                  (DateTime.now().hour >= 5 && DateTime.now().hour <= 11)
+                      ? TextSpan(
+                          text: "Have a nice day! \n",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 32),
+                        )
+                      : (DateTime.now().hour >= 12 && DateTime.now().hour <= 17)
+                          ? TextSpan(
+                              text: "Good afternoon! \n",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 32),
+                            )
+                          : TextSpan(
+                              text: "Good evening! \n",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 32),
+                            ),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               Expanded(
                 flex: 5,
                 child: loading
@@ -94,9 +139,7 @@ class _BodyState extends State<Body> {
               ),
             ],
           ),
-          SizedBox(
-            height: getProportionateScreenWidth(14),
-          ),
+          SizedBox(height: getProportionateScreenWidth(14)),
         ],
       ),
     );
