@@ -1,10 +1,6 @@
-// ignore_for_file: avoid_print, prefer_typing_uninitialized_variables, non_constant_identifier_names
-
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -17,15 +13,18 @@ import 'package:mystore/constants.dart';
 import 'package:mystore/helper/keyboard.dart';
 import 'package:mystore/models/brand.dart';
 import 'package:mystore/models/images.dart';
+import 'package:mystore/models/product.dart';
 import 'package:mystore/models/user.dart';
-import 'package:http/http.dart' as http;
 import 'package:mystore/screen/admin/product_list/product_list.dart';
+import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart' as dio;
 import 'package:mystore/size_config.dart';
 
 class Body extends StatefulWidget {
-  const Body({Key? key, required this.user}) : super(key: key);
+  const Body({Key? key, required this.user, required this.product})
+      : super(key: key);
   final User user;
-
+  final Product product;
   @override
   _BodyState createState() => _BodyState();
 }
@@ -90,7 +89,7 @@ class _BodyState extends State<Body> {
     } else {}
   }
 
-  Future<void> createProduct(
+  Future<void> editProduct(
     List images,
     String? name,
     String? description,
@@ -101,29 +100,48 @@ class _BodyState extends State<Body> {
     List jsonList = [];
     images.map((item) => jsonList.add(item.toJson())).toList();
 
-    var response = await http.post(Uri.parse("$baseUrl/api/products"),
-        headers: <String, String>{
-          'Authorization': 'Bearer ${widget.user.token}',
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode({
-          "images": jsonList,
-          "name": name,
-          "description": description,
-          "price": price,
-          "brand": brandId,
-          "category": cateId,
-          "countInStock": 0,
-        }));
+    var response =
+        await http.put(Uri.parse("$baseUrl/api/products/${widget.product.id}"),
+            headers: <String, String>{
+              'Authorization': 'Bearer ${widget.user.token}',
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode({
+              "images": jsonList,
+              "name": name,
+              "description": description,
+              "price": price,
+              "brand": brandId,
+              "category": cateId,
+            }));
 
-    if (response.statusCode == 201) {
-      _showToast("Product created successfully ");
+    if (response.statusCode == 200) {
+      _showToast("Product edited successfully ");
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => (ProductListScreen(user: widget.user))));
     } else {
-      _showToast("Product created failed");
+      _showToast("Product edited failed");
+    }
+  }
+
+  Future initValue() async {
+    try {
+      setState(() {
+        nameController.text = widget.product.name;
+        descriptionController.text = widget.product.description;
+        priceController.text = widget.product.price.toString();
+        dropdownBrandValue = widget.product.brand.brand;
+        dropdownCateValue = widget.product.category.category;
+
+        for (int i = 0; i < widget.product.images.length; i++) {
+          final item = UploadImage.fromJson(widget.product.images[i].toJson());
+          uploaded.add(item);
+        }
+      });
+    } catch (e) {
+      print("Failed to pick image : $e");
     }
   }
 
@@ -146,7 +164,7 @@ class _BodyState extends State<Body> {
     if (response.statusCode == 200) {
       setState(() {
         listBrand = brandCateFromJson(response.body);
-        dropdownBrandValue = listBrand[0].id;
+        // dropdownBrandValue = listBrand[0].id;
         loading = false;
       });
     } else {
@@ -164,7 +182,7 @@ class _BodyState extends State<Body> {
     if (response.statusCode == 200) {
       setState(() {
         listCate = brandCateFromJson(response.body);
-        dropdownCateValue = listCate[0].id;
+        // dropdownCateValue = listCate[0].id;
         loading2 = false;
       });
     } else {
@@ -192,6 +210,7 @@ class _BodyState extends State<Body> {
   void initState() {
     getBrands();
     getCate();
+    initValue();
     super.initState();
   }
 
@@ -233,100 +252,100 @@ class _BodyState extends State<Body> {
                       FormError(errors: errors),
                       SizedBox(height: SizeConfig.screenHeight * 0.03),
                       Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Product Images:",
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w700)),
-                          Container(
-                            child: (images.isNotEmpty)
-                                ? SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      children: [
-                                        ...List.generate(
-                                          images.length,
-                                          (index) => SizedBox(
-                                            width: 120,
-                                            height: 120,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Image.file(
-                                                images[index],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                            width: getProportionateScreenWidth(
-                                                10)),
-                                        InkWell(
-                                          onTap: () {
-                                            getImage();
-                                          },
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          child: SvgPicture.asset(
-                                            "assets/icons/Add_image.svg",
-                                            height: 120,
-                                            width: 120,
-                                            color: Colors.lightBlue,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                : InkWell(
-                                    onTap: () {
-                                      getImage();
-                                    },
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: SvgPicture.asset(
-                                      "assets/icons/Add_image.svg",
-                                      height: 120,
-                                      width: 120,
-                                      color: Colors.lightBlue,
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: getProportionateScreenWidth(5)),
+                            child: const Text("Product Images:",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w700)),
+                          ),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                ...List.generate(
+                                  widget.product.images.length,
+                                  (index) => SizedBox(
+                                    width: 120,
+                                    height: 120,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Image.network(
+                                        widget.product.images[index].url,
+                                      ),
                                     ),
                                   ),
+                                ),
+                                ...List.generate(
+                                  images.length,
+                                  (index) => SizedBox(
+                                    width: 120,
+                                    height: 120,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Image.file(
+                                        images[index],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                    width: getProportionateScreenWidth(10)),
+                                InkWell(
+                                  onTap: () {
+                                    getImage();
+                                  },
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: SvgPicture.asset(
+                                    "assets/icons/Add_image.svg",
+                                    height: 120,
+                                    width: 120,
+                                    color: Colors.lightBlue,
+                                  ),
+                                ),
+                              ],
+                            ),
                           )
                         ],
                       ),
                       SizedBox(height: SizeConfig.screenHeight * 0.03),
-                      Container(
-                        child: SafeArea(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: getProportionateScreenWidth(250),
-                                    child: DefaultButton(
-                                      text: "Create Product",
-                                      press: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          _formKey.currentState!.save();
-                                          KeyboardUtil.hideKeyboard(context);
-                                          createProduct(
-                                            uploaded,
-                                            nameController.text,
-                                            descriptionController.text,
-                                            double.parse(priceController.text),
-                                            dropdownBrandValue.toString(),
-                                            dropdownCateValue.toString(),
-                                          );
-                                        }
-                                      },
-                                    ),
+                      SafeArea(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: getProportionateScreenWidth(250),
+                                  child: DefaultButton(
+                                    text: "Update Product",
+                                    press: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        _formKey.currentState!.save();
+                                        KeyboardUtil.hideKeyboard(context);
+                                        editProduct(
+                                          uploaded,
+                                          nameController.text,
+                                          descriptionController.text,
+                                          double.parse(priceController.text),
+                                          dropdownBrandValue.toString(),
+                                          dropdownCateValue.toString(),
+                                        );
+                                      }
+                                    },
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: getProportionateScreenHeight(14))
+                          ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -408,7 +427,7 @@ class _BodyState extends State<Body> {
       controller: descriptionController,
       // onSaved: (newValue) => description = newValue,
       minLines: 1,
-      maxLines: 3,
+      maxLines: 5,
       onChanged: (value) {
         if (value.isNotEmpty) {
           removeError(error: kCityNullError);
@@ -437,45 +456,48 @@ class _BodyState extends State<Body> {
       children: [
         Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Brand: ",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: DropdownButton<String>(
-                    value: dropdownBrandValue,
-                    icon: const Icon(Icons.arrow_downward),
-                    iconSize: 20,
-                    elevation: 16,
-                    style: const TextStyle(color: Colors.black),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.black,
-                      margin: EdgeInsets.only(
-                          right: getProportionateScreenWidth(18)),
-                    ),
-                    onChanged: (newValue) {
-                      setState(() {
-                        dropdownBrandValue = newValue!;
-                      });
-                    },
-                    items: listBrand.map((BrandCate value) {
-                      return DropdownMenuItem<String>(
-                        value: value.id,
-                        child: Text(value.name),
-                      );
-                    }).toList(),
+            Padding(
+              padding: EdgeInsets.only(left: getProportionateScreenWidth(5)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Brand: ",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                   ),
-                ),
-              ],
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: DropdownButton<String>(
+                      value: dropdownBrandValue,
+                      icon: const Icon(Icons.arrow_downward),
+                      iconSize: 20,
+                      elevation: 16,
+                      style: const TextStyle(color: Colors.black),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.black,
+                        margin: EdgeInsets.only(
+                            right: getProportionateScreenWidth(18)),
+                      ),
+                      onChanged: (newValue) {
+                        setState(() {
+                          dropdownBrandValue = newValue!;
+                        });
+                      },
+                      items: listBrand.map((BrandCate value) {
+                        return DropdownMenuItem<String>(
+                          value: value.id,
+                          child: Text(value.name),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

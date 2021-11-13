@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:mystore/models/product.dart';
 import 'package:mystore/models/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:mystore/screen/admin/product_edit/product_edit.dart';
 import 'package:mystore/size_config.dart';
 
 class Body extends StatefulWidget {
@@ -62,12 +63,6 @@ class _BodyState extends State<Body> {
     });
   }
 
-  void _showSnackBar(BuildContext context, String text) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(text)));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -105,7 +100,15 @@ class _BodyState extends State<Body> {
                             caption: 'Edit',
                             color: Colors.blue,
                             icon: Icons.edit,
-                            onTap: () => _showSnackBar(context, 'Edit'),
+                            onTap: () {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditProductScreen(
+                                            user: widget.user,
+                                            product: list[index],
+                                          )));
+                            },
                           ),
                           IconSlideAction(
                             caption: 'Delete',

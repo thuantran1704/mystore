@@ -1,11 +1,13 @@
 import 'dart:convert';
 
-List<Brand> brandFromJson(String str) => List<Brand>.from(json.decode(str).map((x) => Brand.fromJson(x)));
+List<BrandCate> brandCateFromJson(String str) =>
+    List<BrandCate>.from(json.decode(str).map((x) => BrandCate.fromJson(x)));
 
-String brandToJson(List<Brand> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String brandCateToJson(List<BrandCate> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class Brand {
-  Brand({
+class BrandCate {
+  BrandCate({
     required this.id,
     required this.name,
     required this.description,
@@ -15,15 +17,15 @@ class Brand {
   String name;
   String description;
 
-  factory Brand.fromJson(Map<String, dynamic> json) => Brand(
-    id: json["_id"],
-    name: json["name"],
-    description: json["description"],
-  );
+  factory BrandCate.fromJson(Map<String, dynamic> json) => BrandCate(
+        id: json["_id"],
+        name: json["name"],
+        description: json["description"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
-    "name": name,
-    "description": description,
-  };
+        "_id": id,
+        "name": name,
+        "description": description,
+      };
 }

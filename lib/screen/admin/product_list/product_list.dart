@@ -27,14 +27,15 @@ class ProductListScreen extends StatelessWidget {
         currentScreen: "product",
         user: user,
       ),
-      body: Body(user : user),
+      body: Body(user: user),
+      //===========================//
       floatingActionButton: FloatingActionButton(
         backgroundColor: kPrimaryColor,
-        onPressed: (){
+        onPressed: () {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) =>  CreateProductScreen(user: user)));
+                  builder: (context) => CreateProductScreen(user: user)));
         },
         tooltip: 'Create new Product',
         child: const Icon(Icons.add),

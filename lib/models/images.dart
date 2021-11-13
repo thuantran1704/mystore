@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class UploadImage {
   late String publicId;
   late String url;
