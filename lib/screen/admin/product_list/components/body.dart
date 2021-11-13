@@ -82,7 +82,7 @@ class _BodyState extends State<Body> {
                   onRefresh: getProductList,
                   child: ListView.builder(
                     padding: EdgeInsets.symmetric(
-                        horizontal: getProportionateScreenWidth(20)),
+                        horizontal: getProportionateScreenWidth(16)),
                     itemCount: list.length,
                     itemBuilder: (context, index) => Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -138,7 +138,17 @@ class VerticalListItem extends StatelessWidget {
               ? Slidable.of(context)?.open()
               : Slidable.of(context)?.close(),
       child: Container(
-        color: Colors.white,
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey.shade300,
+                blurRadius: 2.0,
+                spreadRadius: 1.0),
+          ],
+          color: Colors.grey[50],
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        // color: Colors.white,
         child: ProductItemCard(
           product: product,
         ),
@@ -165,7 +175,7 @@ class _ProductItemCardState extends State<ProductItemCard> {
     return Row(
       children: [
         SizedBox(
-          width: getProportionateScreenWidth(68),
+          width: getProportionateScreenWidth(70),
           child: AspectRatio(
             aspectRatio: 1,
             child: Container(
@@ -192,7 +202,7 @@ class _ProductItemCardState extends State<ProductItemCard> {
                 style: const TextStyle(fontSize: 16, color: Colors.black),
                 maxLines: 2,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -204,6 +214,7 @@ class _ProductItemCardState extends State<ProductItemCard> {
                   ),
                 ],
               ),
+              const SizedBox(height: 5),
             ],
           ),
         ),

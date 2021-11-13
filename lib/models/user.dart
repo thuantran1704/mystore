@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
-
 String userToJson(User data) => json.encode(data.toJson());
 
 class User {
@@ -146,5 +145,58 @@ class UserAddress {
         "city": city,
         "postalCode": postalCode,
         "country": country,
+      };
+}
+
+List<ManagerUser> managerUserFromJson(String str) => List<ManagerUser>.from(
+    json.decode(str).map((x) => ManagerUser.fromJson(x)));
+String managerUserToJson(List<ManagerUser> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class ManagerUser {
+  ManagerUser({
+    required this.userAddress,
+    required this.role,
+    required this.isDisable,
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.password,
+    required this.phone,
+    required this.cart,
+  });
+
+  UserAddress userAddress;
+  Role role;
+  bool isDisable;
+  String id;
+  String name;
+  String email;
+  String password;
+  String phone;
+  List<dynamic> cart;
+
+  factory ManagerUser.fromJson(Map<String, dynamic> json) => ManagerUser(
+        userAddress: UserAddress.fromJson(json["userAddress"]),
+        role: Role.fromJson(json["role"]),
+        isDisable: json["isDisable"],
+        id: json["_id"],
+        name: json["name"],
+        email: json["email"],
+        password: json["password"],
+        phone: json["phone"],
+        cart: List<dynamic>.from(json["cart"].map((x) => x)),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "userAddress": userAddress.toJson(),
+        "role": role.toJson(),
+        "isDisable": isDisable,
+        "_id": id,
+        "name": name,
+        "email": email,
+        "password": password,
+        "phone": phone,
+        "cart": List<dynamic>.from(cart.map((x) => x)),
       };
 }
