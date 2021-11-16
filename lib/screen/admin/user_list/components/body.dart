@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:mystore/models/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:mystore/screen/admin/user_edit/user_edit.dart';
 import 'package:mystore/size_config.dart';
 
 class Body extends StatefulWidget {
@@ -139,13 +140,13 @@ class _BodyState extends State<Body> {
                                 color: Colors.blue,
                                 icon: Icons.edit,
                                 onTap: () {
-                                  // Navigator.pushReplacement(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => EditProductScreen(
-                                  //               user: widget.user,
-                                  //               product: list[index],
-                                  //             )));
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => EditUserScreen(
+                                                user: widget.user,
+                                                userEdit: list[index],
+                                              )));
                                 },
                               ),
                               (list[index].isDisable == false)

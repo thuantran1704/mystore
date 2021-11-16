@@ -70,7 +70,8 @@ class _BodyState extends State<Body> {
                 padding: EdgeInsets.only(left: getProportionateScreenWidth(10)),
                 child: Text.rich(
                   TextSpan(
-                    text: "Hi ${widget.user.name},",
+                    text:
+                        "Hi ${(widget.user.name).contains(" ") ? widget.user.name.split(" ").last : widget.user.name},",
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 35),
                   ),
@@ -198,7 +199,7 @@ class AnalyticInfoCard extends StatelessWidget {
             ],
           ),
           SizedBox(
-            height: getProportionateScreenHeight(12),
+            height: getProportionateScreenHeight(8),
           ),
           Text(
             title,

@@ -11,11 +11,9 @@ import 'package:mystore/models/user.dart';
 import 'package:mystore/screen/admin/dashboard/dashboard.dart';
 import 'package:mystore/screen/forgot_password/forgot_password_screen.dart';
 import 'package:mystore/screen/home/home_screen.dart';
-import 'package:mystore/screen/profile/profile_screen.dart';
 import 'package:mystore/screen/sign_in/components/custom_surfix_icon.dart';
 import 'package:mystore/size_config.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 // ignore: use_key_in_widget_constructors
 class SignForm extends StatefulWidget {

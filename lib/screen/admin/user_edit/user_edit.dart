@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mystore/constants.dart';
-import 'package:mystore/models/product.dart';
 import 'package:mystore/models/user.dart';
 import 'package:mystore/screen/admin/user_edit/components/body.dart';
 import 'package:mystore/screen/admin/user_list/user_list.dart';
 
-class EditProductScreen extends StatelessWidget {
-  const EditProductScreen({Key? key, required this.user, required this.product})
+class EditUserScreen extends StatelessWidget {
+  const EditUserScreen({Key? key, required this.user, required this.userEdit})
       : super(key: key);
   final User user;
-  final Product product;
+  final ManagerUser userEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +18,7 @@ class EditProductScreen extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
         title: const Text(
-          "Edit Product",
+          "Edit User",
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
@@ -31,7 +30,7 @@ class EditProductScreen extends StatelessWidget {
                   (Route<dynamic> route) => false,
                 )),
       ),
-      body: Body(user: user, product: product),
+      body: Body(user: user, userEdit: userEdit),
     );
   }
 }
