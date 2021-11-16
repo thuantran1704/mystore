@@ -158,14 +158,16 @@ class _BodyState extends State<Body> {
                                               RegExp(r'[0-9]')),
                                           LengthLimitingTextInputFormatter(2),
                                         ],
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          // isDense: true,
-                                          contentPadding:
-                                              EdgeInsets.only(left: 16),
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color:
+                                                      Colors.green.shade900)),
+                                          enabledBorder: InputBorder.none,
+                                          contentPadding: const EdgeInsets.only(
+                                              left: 14, bottom: 14),
                                         ),
-                                        // onSaved: (newValue) => qty =
-                                        //     int.parse(newValue.toString()),
+
                                         controller: qtyController,
                                         onChanged: (value) {
                                           if (value.isNotEmpty) {

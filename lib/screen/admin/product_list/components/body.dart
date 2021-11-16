@@ -41,7 +41,7 @@ class _BodyState extends State<Body> {
     }
   }
 
-  Future<void> addToCard(String id) async {
+  Future<void> addToCart(String id) async {
     var response = await http.post(Uri.parse("$baseUrl/api/users/cart/$id/add"),
         headers: <String, String>{
           'Authorization': 'Bearer ${widget.user.token}',
@@ -128,7 +128,7 @@ class _BodyState extends State<Body> {
                             color: Colors.greenAccent.shade200,
                             icon: Icons.add,
                             onTap: () {
-                              addToCard(list[index].id);
+                              addToCart(list[index].id);
                             },
                           ),
                         ],

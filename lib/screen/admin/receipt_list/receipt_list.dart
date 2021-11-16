@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mystore/constants.dart';
 import 'package:mystore/models/user.dart';
+import 'package:mystore/screen/admin/receipt_cart/receipt_cart.dart';
 import 'package:mystore/screen/admin/receipt_list/components/body.dart';
 import 'package:mystore/screen/admin/dashboard/components/drawer_menu.dart';
 
@@ -31,7 +32,11 @@ class _ReceiptListScreenState extends State<ReceiptListScreen> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: kPrimaryColor,
           onPressed: () {
-            //push to receipt cart screen
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        ReceiptCartScreen(user: widget.user)));
           },
           tooltip: 'Receipt Cart',
           child: const Icon(Icons.shopping_cart),

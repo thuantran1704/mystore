@@ -90,7 +90,6 @@ class _CartScreenState extends State<CartScreen> {
   void initState() {
     super.initState();
     getCart(widget.user.token);
-    // calSum(list);
   }
 
   @override

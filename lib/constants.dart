@@ -45,6 +45,9 @@ const String kProductNameNullError = "Please Enter Name";
 const String kProductDescriptionNullError = "Please Enter Description";
 const String kProductPriceError = "Please Enter Price";
 
+const String kProductSalePriceError =
+    "Import price is greater than the selling price";
+
 final otpInputDecoration = InputDecoration(
   contentPadding:
       EdgeInsets.symmetric(vertical: getProportionateScreenWidth(15)),
