@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mystore/constants.dart';
-import 'package:mystore/models/order.dart';
+import 'package:mystore/models/reciept.dart';
 import 'package:mystore/models/user.dart';
 import 'package:http/http.dart' as http;
-import 'package:mystore/screen/order_details/order_details_screen.dart';
+import 'package:mystore/screen/admin/receipt_detail/receipt_detail.dart';
 import 'package:mystore/screen/orders_my/components/body.dart';
 import 'package:mystore/size_config.dart';
 
@@ -16,32 +16,33 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  List<Order> list = [];
+  List<Receipt> list = [];
   var loading = false;
   final baseUrl = "https://mystore-backend.herokuapp.com";
 
-  Future<void> getAllOrders() async {
+  Future<void> getAllReceipts() async {
     setState(() {
       loading = true;
     });
-    final response = await http.get(Uri.parse("$baseUrl/api/orders"), headers: {
-      'Authorization': 'Bearer ${widget.user.token}',
-      "Accept": "application/json"
-    });
+    final response = await http.get(Uri.parse("$baseUrl/api/receipts"),
+        headers: {
+          'Authorization': 'Bearer ${widget.user.token}',
+          "Accept": "application/json"
+        });
 
     if (response.statusCode == 200) {
       setState(() {
-        list = parseOrders(response.body);
+        list = receiptFromJson(response.body);
         loading = false;
       });
     } else {
-      throw Exception('Unable to fetch orders from the REST API');
+      throw Exception('Unable to fetch Receipts from the REST API');
     }
   }
 
   @override
   void initState() {
-    getAllOrders();
+    getAllReceipts();
     super.initState();
   }
 
@@ -55,18 +56,17 @@ class _BodyState extends State<Body> {
                 child: const Center(
                     child: CircularProgressIndicator(
                   color: kPrimaryColor,
-                  // backgroundColor: Colors.black,
                 )),
               )
             : list.isEmpty
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
-                      Text("List Order is empty"),
+                      Text("List Receipt is empty"),
                     ],
                   )
                 : RefreshIndicator(
-                    onRefresh: getAllOrders,
+                    onRefresh: getAllReceipts,
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
@@ -84,8 +84,9 @@ class _BodyState extends State<Body> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => OrderScreen(
-                                                  orderId: list[index].id,
+                                            builder: (context) =>
+                                                ReceiptDetailScreen(
+                                                  receiptId: list[index].id,
                                                   user: widget.user,
                                                 )));
                                   },
@@ -138,43 +139,29 @@ class _BodyState extends State<Body> {
                                                     fontWeight: FontWeight.w500,
                                                   ),
                                                 ),
-                                                (list[index].status == 1)
-                                                    ? const StatusMyOrdersCard(
+                                                (list[index]
+                                                            .status
+                                                            .toLowerCase() ==
+                                                        "ordered")
+                                                    ? StatusMyOrdersCard(
                                                         status:
-                                                            "Waitting for Payment",
+                                                            list[index].status,
                                                         color:
                                                             Colors.blueAccent)
-                                                    : (list[index].status == 2)
-                                                        ? const StatusMyOrdersCard(
-                                                            status:
-                                                                "Waitting for Confirm",
-                                                            color: Colors
-                                                                .blueAccent,
+                                                    : (list[index]
+                                                                .status
+                                                                .toLowerCase() ==
+                                                            "received")
+                                                        ? StatusMyOrdersCard(
+                                                            status: list[index]
+                                                                .status,
+                                                            color: Colors.green,
                                                           )
-                                                        : (list[index].status ==
-                                                                3)
-                                                            ? const StatusMyOrdersCard(
-                                                                status:
-                                                                    "On delivery",
-                                                                color:
-                                                                    kPrimaryColor,
-                                                              )
-                                                            : (list[index]
-                                                                        .status ==
-                                                                    4)
-                                                                ? const StatusMyOrdersCard(
-                                                                    status:
-                                                                        "Completed",
-                                                                    color: Colors
-                                                                        .green,
-                                                                  )
-                                                                : StatusMyOrdersCard(
-                                                                    status:
-                                                                        "Cancelled",
-                                                                    color: Colors
-                                                                        .red
-                                                                        .shade900,
-                                                                  )
+                                                        : StatusMyOrdersCard(
+                                                            status: "Cancelled",
+                                                            color: Colors
+                                                                .red.shade900,
+                                                          )
                                               ],
                                             ),
                                           ),
@@ -197,32 +184,17 @@ class _BodyState extends State<Body> {
                   ),
       ),
       OrderTabViewByStatus(
-        status: "1",
-        title: "Waitting for Payment",
+        status: "Ordered",
         color: Colors.blueAccent,
         user: widget.user,
       ),
       OrderTabViewByStatus(
-        status: "2",
-        title: "Waitting for Confirm",
-        color: Colors.blueAccent,
-        user: widget.user,
-      ),
-      OrderTabViewByStatus(
-        status: "3",
-        title: "On delivery",
-        color: kPrimaryColor,
-        user: widget.user,
-      ),
-      OrderTabViewByStatus(
-        status: "4",
-        title: "Completed",
+        status: "Received",
         color: Colors.green,
         user: widget.user,
       ),
       OrderTabViewByStatus(
-        status: "0",
-        title: "Cancelled",
+        status: "Cancelled",
         color: Colors.red.shade900,
         user: widget.user,
       ),
@@ -232,14 +204,9 @@ class _BodyState extends State<Body> {
 
 class OrderTabViewByStatus extends StatefulWidget {
   const OrderTabViewByStatus(
-      {Key? key,
-      required this.status,
-      required this.title,
-      required this.color,
-      required this.user})
+      {Key? key, required this.status, required this.color, required this.user})
       : super(key: key);
   final String status;
-  final String title;
   final Color color;
   final User user;
 
@@ -248,16 +215,16 @@ class OrderTabViewByStatus extends StatefulWidget {
 }
 
 class _OrderTabViewByStatusState extends State<OrderTabViewByStatus> {
-  List<Order> list = [];
+  List<Receipt> list = [];
   var loading = false;
   final baseUrl = "https://mystore-backend.herokuapp.com";
 
-  Future<void> getOrdersByStatus() async {
+  Future<void> getReceiptsByStatus() async {
     setState(() {
       loading = true;
     });
     final response = await http.get(
-        Uri.parse("$baseUrl/api/orders/status/${widget.status}"),
+        Uri.parse("$baseUrl/api/receipts/status/${widget.status}"),
         headers: {
           'Authorization': 'Bearer ${widget.user.token}',
           "Accept": "application/json"
@@ -265,7 +232,7 @@ class _OrderTabViewByStatusState extends State<OrderTabViewByStatus> {
 
     if (response.statusCode == 200) {
       setState(() {
-        list = parseOrders(response.body);
+        list = receiptFromJson(response.body);
         loading = false;
       });
     } else {
@@ -275,7 +242,7 @@ class _OrderTabViewByStatusState extends State<OrderTabViewByStatus> {
 
   @override
   void initState() {
-    getOrdersByStatus();
+    getReceiptsByStatus();
     super.initState();
   }
 
@@ -294,11 +261,11 @@ class _OrderTabViewByStatusState extends State<OrderTabViewByStatus> {
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    Text("List Order is empty"),
+                    Text("List Receipt is empty"),
                   ],
                 )
               : RefreshIndicator(
-                  onRefresh: getOrdersByStatus,
+                  onRefresh: getReceiptsByStatus,
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
@@ -316,8 +283,9 @@ class _OrderTabViewByStatusState extends State<OrderTabViewByStatus> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => OrderScreen(
-                                                orderId: list[index].id,
+                                          builder: (context) =>
+                                              ReceiptDetailScreen(
+                                                receiptId: list[index].id,
                                                 user: widget.user,
                                               )));
                                 },
@@ -371,7 +339,7 @@ class _OrderTabViewByStatusState extends State<OrderTabViewByStatus> {
                                                 ),
                                               ),
                                               StatusMyOrdersCard(
-                                                  status: widget.title,
+                                                  status: widget.status,
                                                   color: widget.color)
                                             ],
                                           ),

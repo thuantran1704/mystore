@@ -463,7 +463,7 @@ class _BodyState extends State<Body> {
                 children: [
                   const Text(
                     "Brand: ",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
                   ),
                   Container(
                     padding:
@@ -511,7 +511,7 @@ class _BodyState extends State<Body> {
               children: [
                 const Text(
                   "Category: ",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
                 ),
                 Container(
                   padding:

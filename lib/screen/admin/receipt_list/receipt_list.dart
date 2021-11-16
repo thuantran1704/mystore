@@ -1,29 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:mystore/constants.dart';
 import 'package:mystore/models/user.dart';
+import 'package:mystore/screen/admin/receipt_list/components/body.dart';
 import 'package:mystore/screen/admin/dashboard/components/drawer_menu.dart';
-import 'package:mystore/screen/admin/order_list/components/body.dart';
 
-class OrdertListScreen extends StatefulWidget {
-  const OrdertListScreen({Key? key, required this.user}) : super(key: key);
+class ReceiptListScreen extends StatefulWidget {
+  const ReceiptListScreen({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
   final User user;
 
   @override
-  State<OrdertListScreen> createState() => _OrdertListScreenState();
+  _ReceiptListScreenState createState() => _ReceiptListScreenState();
 }
 
-class _OrdertListScreenState extends State<OrdertListScreen> {
+class _ReceiptListScreenState extends State<ReceiptListScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 6,
+      length: 4,
       child: Scaffold(
         appBar: buildAppBar(),
         drawer: DrawerMenu(
-          currentScreen: "order",
+          currentScreen: "receipt",
           user: widget.user,
         ),
         body: Body(user: widget.user),
+        //===========================//
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: kPrimaryColor,
+          onPressed: () {
+            //push to receipt cart screen
+          },
+          tooltip: 'Receipt Cart',
+          child: const Icon(Icons.shopping_cart),
+        ),
       ),
     );
   }
@@ -35,7 +47,7 @@ class _OrdertListScreenState extends State<OrdertListScreen> {
       iconTheme: const IconThemeData(color: Colors.white),
       centerTitle: true,
       title: const Text(
-        "Order Management",
+        "Receipt Management",
         style: TextStyle(color: Colors.white),
       ),
       bottom: TabBar(
@@ -54,10 +66,8 @@ class _OrdertListScreenState extends State<OrdertListScreen> {
         labelColor: Colors.white,
         tabs: const [
           Text("All", style: TextStyle(fontSize: 16)),
-          Text("Pay", style: TextStyle(fontSize: 16)),
-          Text("Wait", style: TextStyle(fontSize: 16)),
-          Text("Delivery", style: TextStyle(fontSize: 16)),
-          Text("Completed", style: TextStyle(fontSize: 16)),
+          Text("Ordered", style: TextStyle(fontSize: 16)),
+          Text("Received", style: TextStyle(fontSize: 16)),
           Text("Cancelled", style: TextStyle(fontSize: 16)),
         ],
       ),

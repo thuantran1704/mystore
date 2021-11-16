@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mystore/models/product.dart';
 import 'package:mystore/models/user.dart';
 import 'package:http/http.dart' as http;
@@ -36,6 +39,30 @@ class _BodyState extends State<Body> {
     } else {
       throw Exception('Unable to fetch products from the REST API');
     }
+  }
+
+  Future<void> addToCard(String id) async {
+    var response = await http.post(Uri.parse("$baseUrl/api/users/cart/$id/add"),
+        headers: <String, String>{
+          'Authorization': 'Bearer ${widget.user.token}',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, int>{"qty": 1, "price": 0}));
+
+    if (response.statusCode == 201) {
+      _showToast("Add to Cart successful");
+    } else {
+      _showToast("Add to Cart failed");
+    }
+  }
+
+  void _showToast(String msg) {
+    Fluttertoast.showToast(
+        msg: msg,
+        fontSize: 15,
+        gravity: ToastGravity.BOTTOM,
+        toastLength: Toast.LENGTH_LONG,
+        timeInSecForIosWeb: 1);
   }
 
   Animation<double>? _rotationAnimation;
@@ -95,6 +122,16 @@ class _BodyState extends State<Body> {
                         child: VerticalListItem(
                           product: list[index],
                         ),
+                        actions: [
+                          IconSlideAction(
+                            caption: 'Import',
+                            color: Colors.greenAccent.shade200,
+                            icon: Icons.add,
+                            onTap: () {
+                              addToCard(list[index].id);
+                            },
+                          ),
+                        ],
                         secondaryActions: <Widget>[
                           IconSlideAction(
                             caption: 'Edit',

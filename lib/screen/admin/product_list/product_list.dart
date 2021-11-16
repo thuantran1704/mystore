@@ -21,8 +21,7 @@ class ProductListScreen extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      // key: context.read<Controller>().scaffoldKey,
-      // backgroundColor: bgColor,
+
       drawer: DrawerMenu(
         currentScreen: "product",
         user: user,

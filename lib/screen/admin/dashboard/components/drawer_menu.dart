@@ -5,6 +5,7 @@ import 'package:mystore/screen/admin/dashboard/components/drawer_list_tile.dart'
 import 'package:mystore/screen/admin/dashboard/dashboard.dart';
 import 'package:mystore/screen/admin/order_list/order_list.dart';
 import 'package:mystore/screen/admin/product_list/product_list.dart';
+import 'package:mystore/screen/admin/receipt_list/receipt_list.dart';
 import 'package:mystore/screen/admin/user_list/user_list.dart';
 import 'package:mystore/screen/sign_in/sign_in_screen.dart';
 
@@ -93,7 +94,7 @@ class DrawerMenu extends StatelessWidget {
                 }
               }),
           DrawerListTile(
-              style: (currentScreen == "receipts")
+              style: (currentScreen == "receipt")
                   ? const TextStyle(
                       color: Colors.blueAccent,
                       fontSize: 16,
@@ -101,7 +102,14 @@ class DrawerMenu extends StatelessWidget {
                   : const TextStyle(color: grey),
               title: 'Receipts',
               svgSrc: 'assets/icons/Pages.svg',
-              tap: () {}),
+              tap: () {
+                if (currentScreen != "receipt") {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ReceiptListScreen(user: user)));
+                }
+              }),
           DrawerListTile(
               title: 'Statistics',
               style: (currentScreen == "statistic")
