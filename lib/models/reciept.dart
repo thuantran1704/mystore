@@ -18,27 +18,30 @@ class Receipt {
     required this.receiptItems,
     required this.user,
     required this.orderAt,
+    required this.receiveAt,
   });
 
-  String id;
   Supplier supplier;
   int shippingPrice;
   double totalPrice;
   String status;
+  String id;
   List<ReceiptItem> receiptItems;
-  String user;
+  UserR user;
   DateTime orderAt;
+  DateTime receiveAt;
 
   factory Receipt.fromJson(Map<String, dynamic> json) => Receipt(
         supplier: Supplier.fromJson(json["supplier"]),
         shippingPrice: json["shippingPrice"],
-        totalPrice: json["totalPrice"],
+        totalPrice: json["totalPrice"].toDouble(),
         status: json["status"],
         id: json["_id"],
         receiptItems: List<ReceiptItem>.from(
             json["receiptItems"].map((x) => ReceiptItem.fromJson(x))),
-        user: json["user"],
+        user: UserR.fromJson(json["user"]),
         orderAt: DateTime.parse(json["orderAt"]),
+        receiveAt: DateTime.parse(json["receiveAt"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -48,8 +51,9 @@ class Receipt {
         "status": status,
         "_id": id,
         "receiptItems": List<dynamic>.from(receiptItems.map((x) => x.toJson())),
-        "user": user,
+        "user": user.toJson(),
         "orderAt": orderAt.toIso8601String(),
+        "receiveAt": receiveAt.toIso8601String(),
       };
 }
 
@@ -58,6 +62,7 @@ class ReceiptItem {
     required this.id,
     required this.name,
     required this.qty,
+    required this.image,
     required this.price,
     required this.product,
   });
@@ -65,6 +70,7 @@ class ReceiptItem {
   String id;
   String name;
   int qty;
+  String image;
   double price;
   String product;
 
@@ -72,7 +78,8 @@ class ReceiptItem {
         id: json["_id"],
         name: json["name"],
         qty: json["qty"],
-        price: json["price"],
+        image: json["image"],
+        price: json["price"].toDouble(),
         product: json["product"],
       );
 
@@ -80,6 +87,7 @@ class ReceiptItem {
         "_id": id,
         "name": name,
         "qty": qty,
+        "image": image,
         "price": price,
         "product": product,
       };
@@ -110,6 +118,30 @@ class Supplier {
         "address": address,
         "country": country,
         "phone": phone,
+      };
+}
+
+class UserR {
+  UserR({
+    required this.id,
+    required this.name,
+    required this.email,
+  });
+
+  String id;
+  String name;
+  String email;
+
+  factory UserR.fromJson(Map<String, dynamic> json) => UserR(
+        id: json["_id"],
+        name: json["name"],
+        email: json["email"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "_id": id,
+        "name": name,
+        "email": email,
       };
 }
 

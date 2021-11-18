@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mystore/constants.dart';
-import 'package:mystore/models/user.dart';
+import 'package:mystore/models/reciept.dart';
 import 'package:mystore/size_config.dart';
 
 class ReceiptItems extends StatelessWidget {
   const ReceiptItems({
     Key? key,
-    required this.list,
+    required this.receipt,
   }) : super(key: key);
 
-  final List<Cart> list;
+  final Receipt receipt;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,9 @@ class ReceiptItems extends StatelessWidget {
           Column(
             children: [
               ...List.generate(
-                  list.length, (index) => ReceiptItemCard(item: list[index])),
+                  receipt.receiptItems.length,
+                  (index) =>
+                      ReceiptItemCard(item: receipt.receiptItems[index])),
             ],
           ),
         ],
@@ -37,7 +39,7 @@ class ReceiptItemCard extends StatelessWidget {
     required this.item,
   }) : super(key: key);
 
-  final Cart item;
+  final ReceiptItem item;
 
   @override
   Widget build(BuildContext context) {
