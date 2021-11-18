@@ -6,6 +6,8 @@ List<Receipt> receiptFromJson(String str) =>
 String receiptToJson(List<Receipt> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
+Receipt singleReceiptFromJson(String str) => Receipt.fromJson(jsonDecode(str));
+
 class Receipt {
   Receipt({
     required this.supplier,
@@ -20,7 +22,7 @@ class Receipt {
 
   String id;
   Supplier supplier;
-  double shippingPrice;
+  int shippingPrice;
   double totalPrice;
   String status;
   List<ReceiptItem> receiptItems;

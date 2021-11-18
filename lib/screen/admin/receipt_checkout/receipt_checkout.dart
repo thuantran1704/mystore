@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mystore/components/default_button.dart';
 import 'package:mystore/constants.dart';
 import 'package:mystore/models/reciept.dart';
 import 'package:mystore/models/user.dart';
 import 'package:mystore/screen/admin/receipt_checkout/components/receipt_items.dart';
 import 'package:mystore/screen/admin/receipt_checkout/components/suplier_info.dart';
+import 'package:mystore/screen/admin/receipt_detail/receipt_detail.dart';
 import 'package:mystore/screen/check_out/components/custom_title.dart';
 import 'package:mystore/size_config.dart';
 import 'package:http/http.dart' as http;
@@ -27,6 +31,72 @@ class RecieptCheckOutScreen extends StatefulWidget {
 
 class _RecieptCheckOutScreenState extends State<RecieptCheckOutScreen> {
   final shippingPrice = 0;
+  static const baseUrl = "https://mystore-backend.herokuapp.com";
+
+  Future<void> createReceipt(
+      List receiptItems, SuplierInfo suplier, double totalPrice) async {
+    List jsonList = [];
+    receiptItems.map((item) => jsonList.add(item.toJson())).toList();
+
+    totalPrice = double.parse(totalPrice.toStringAsFixed(2));
+
+    var response = await http.post(Uri.parse("$baseUrl/api/receipts"),
+        headers: <String, String>{
+          'Authorization': 'Bearer ${widget.user.token}',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          "receiptItems": jsonList,
+          "supplier": ({
+            "name": suplier.name,
+            "address": suplier.address,
+            "country": suplier.country,
+            "phone": suplier.phone,
+          }),
+          "itemsPrice": totalPrice,
+          "shippingPrice": 0,
+          "totalPrice": totalPrice,
+        }));
+
+    if (response.statusCode == 201) {
+      _showToast("Receipt created successfully ");
+      // removeAllCartItem(widget.user.token);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ReceiptDetailScreen(
+                    receiptId: response.body.toString().substring(1, 25),
+                    user: widget.user,
+                  )));
+    } else {
+      _showToast("Receipt created failed");
+    }
+  }
+
+  Future<void> removeAllCartItem(String token) async {
+    final response = await http.delete(
+        Uri.parse("$baseUrl/api/users/cart/remove"),
+        headers: <String, String>{
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json; charset=UTF-8',
+        });
+
+    if (response.statusCode == 200) {
+    } else {
+      _showToast("Remove Failed");
+
+      throw Exception('Unable to fetch products from the REST API');
+    }
+  }
+
+  void _showToast(String msg) {
+    Fluttertoast.showToast(
+        msg: msg,
+        fontSize: 15,
+        gravity: ToastGravity.BOTTOM,
+        toastLength: Toast.LENGTH_LONG,
+        timeInSecForIosWeb: 1);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +189,7 @@ class _RecieptCheckOutScreenState extends State<RecieptCheckOutScreen> {
                 children: [
                   Text.rich(
                     TextSpan(
-                      text: "Total Order:\n",
+                      text: "Total Receipt:\n",
                       children: [
                         TextSpan(
                           text: "\$${widget.total.toStringAsFixed(2)}",
@@ -132,9 +202,10 @@ class _RecieptCheckOutScreenState extends State<RecieptCheckOutScreen> {
                   SizedBox(
                     width: getProportionateScreenWidth(190),
                     child: DefaultButton(
-                      text: "Place Order",
+                      text: "Place Receipt",
                       press: () {
-                        // createReceipt(widget.list, shippingPrice, totalPrice);
+                        createReceipt(
+                            widget.list, widget.suplier, widget.total);
                       },
                     ),
                   ),

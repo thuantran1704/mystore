@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -124,6 +126,21 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
 
       throw Exception('Unable to fetch products from the REST API');
     }
+  }
+
+  Future<String> updateCartItem(String id, double qty, double price) async {
+    var response = await http.post(Uri.parse("$baseUrl/api/users/cart/$id/add"),
+        headers: <String, String>{
+          'Authorization': 'Bearer ${widget.user.token}',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, double>{"qty": qty, "price": price}));
+
+    if (response.statusCode == 201) {
+    } else {
+      _showToast("Edit Price failed");
+    }
+    return "";
   }
 
   void addError({required String error}) {
@@ -336,6 +353,12 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
                                                     });
                                                   }
                                                   return;
+                                                },
+                                                onFieldSubmitted: (text) {
+                                                  updateCartItem(
+                                                      list[index].product,
+                                                      0,
+                                                      list[index].price);
                                                 },
                                                 validator: (value) {
                                                   if (value!.isEmpty) {
