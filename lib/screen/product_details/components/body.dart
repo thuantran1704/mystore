@@ -167,7 +167,6 @@ class _BodyState extends State<Body> {
                                           contentPadding: const EdgeInsets.only(
                                               left: 14, bottom: 14),
                                         ),
-
                                         controller: qtyController,
                                         onChanged: (value) {
                                           if (value.isNotEmpty) {
@@ -184,17 +183,6 @@ class _BodyState extends State<Body> {
                                           }
                                           return;
                                         },
-                                        // validator: (value) {
-                                        //   if (value!.isEmpty) {
-                                        //     setState(() {
-                                        //       qty = 1;
-                                        //       qtyController.text =
-                                        //           qty.toString();
-                                        //     });
-                                        //     return "Required Value";
-                                        //   }
-                                        //   return null;
-                                        // },
                                       ),
                                     ),
 
