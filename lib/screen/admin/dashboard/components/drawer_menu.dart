@@ -6,6 +6,7 @@ import 'package:mystore/screen/admin/dashboard/dashboard.dart';
 import 'package:mystore/screen/admin/order_list/order_list.dart';
 import 'package:mystore/screen/admin/product_list/product_list.dart';
 import 'package:mystore/screen/admin/receipt_list/receipt_list.dart';
+import 'package:mystore/screen/admin/statistic/statistic.dart';
 import 'package:mystore/screen/admin/user_list/user_list.dart';
 import 'package:mystore/screen/sign_in/sign_in_screen.dart';
 
@@ -94,13 +95,13 @@ class DrawerMenu extends StatelessWidget {
                 }
               }),
           DrawerListTile(
+              title: 'Receipts',
               style: (currentScreen == "receipt")
                   ? const TextStyle(
                       color: Colors.blueAccent,
                       fontSize: 16,
                       fontWeight: FontWeight.bold)
                   : const TextStyle(color: grey),
-              title: 'Receipts',
               svgSrc: 'assets/icons/Pages.svg',
               tap: () {
                 if (currentScreen != "receipt") {
@@ -119,7 +120,14 @@ class DrawerMenu extends StatelessWidget {
                       fontWeight: FontWeight.bold)
                   : const TextStyle(color: grey),
               svgSrc: 'assets/icons/Statistics.svg',
-              tap: () {}),
+              tap: () {
+                if (currentScreen != "statistic") {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => StatisticScreen(user: user)));
+                }
+              }),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: appPadding * 2),
             child: Divider(
