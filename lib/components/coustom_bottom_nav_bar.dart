@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mystore/models/user.dart';
 import 'package:mystore/screen/cart/cart_screen.dart';
+import 'package:mystore/screen/chat_bot/chat_bot.dart';
 import 'package:mystore/screen/home/home_screen.dart';
 import 'package:mystore/screen/profile/profile_screen.dart';
 
@@ -66,14 +67,29 @@ class CustomBottomNavBar extends StatelessWidget {
                           }
                       }),
               IconButton(
-                icon: SvgPicture.asset("assets/icons/Chat bubble Icon.svg"),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: SvgPicture.asset("assets/icons/Cart Icon.svg",
+                icon: SvgPicture.asset(
+                  "assets/icons/Chat bubble Icon.svg",
                   color: MenuState.cart == selectedMenu
                       ? kPrimaryColor
-                      : inActiveIconColor,),
+                      : inActiveIconColor,
+                ),
+                onPressed: () {
+                  if (currentPage != 2) {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChatBotScreen(user: user)),
+                        (Route<dynamic> route) => false);
+                  }
+                },
+              ),
+              IconButton(
+                icon: SvgPicture.asset(
+                  "assets/icons/Cart Icon.svg",
+                  color: MenuState.cart == selectedMenu
+                      ? kPrimaryColor
+                      : inActiveIconColor,
+                ),
                 onPressed: () {
                   if (currentPage != 3) {
                     Navigator.pushAndRemoveUntil(
@@ -92,7 +108,7 @@ class CustomBottomNavBar extends StatelessWidget {
                         : inActiveIconColor,
                   ),
                   onPressed: () => {
-                        if (currentPage != 2)
+                        if (currentPage != 4)
                           {
                             Navigator.pushAndRemoveUntil(
                                 context,

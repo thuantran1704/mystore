@@ -51,7 +51,7 @@ class _BodyState extends State<Body> {
 
   Future getImage() async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      final image = await ImagePicker().getImage(source: ImageSource.gallery);
       if (image == null) return;
       final imageTemporary = File(image.path);
       setState(() {
@@ -79,7 +79,7 @@ class _BodyState extends State<Body> {
         data: formData,
         options: dio.Options(headers: {
           'Authorization': 'Bearer ${widget.user.token}',
-          "Content-type": "multipart/form-data"
+          // "Content-type": "multipart/form-data"
         }));
 
     if (response.statusCode == 200) {
