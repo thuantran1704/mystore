@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mystore/constants.dart';
 import 'package:mystore/models/user.dart';
+import 'package:mystore/screen/all_product/all_product_screen.dart';
 import 'package:mystore/screen/cart/cart_screen.dart';
 import 'package:mystore/screen/home/components/icon_btn_with_counter.dart';
 import 'package:mystore/size_config.dart';
@@ -37,7 +38,15 @@ class _HomeHeaderState extends State<HomeHeader> {
             ),
             child: TextField(
               controller: keywordController,
-              onEditingComplete: () {},
+              onEditingComplete: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AllProductScreen(
+                              user: widget.user,
+                              keyword: keywordController.text.trim(),
+                            )));
+              },
               decoration: InputDecoration(
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,

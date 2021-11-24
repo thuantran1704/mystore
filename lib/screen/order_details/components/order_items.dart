@@ -3,7 +3,7 @@ import 'package:mystore/models/order.dart';
 import 'package:mystore/screen/order_details/components/order_item_card.dart';
 import 'package:mystore/size_config.dart';
 
-class OrderItems extends StatelessWidget {
+class OrderItems extends StatefulWidget {
   const OrderItems({
     Key? key,
     required this.order,
@@ -11,6 +11,11 @@ class OrderItems extends StatelessWidget {
 
   final Order order;
 
+  @override
+  State<OrderItems> createState() => _OrderItemsState();
+}
+
+class _OrderItemsState extends State<OrderItems> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -26,8 +31,12 @@ class OrderItems extends StatelessWidget {
           SizedBox(height: getProportionateScreenHeight(4)),
           Column(
             children: [
-              ...List.generate(order.orderItems.length,
-                  (index) => OrderItemCard(item: order.orderItems[index])),
+              ...List.generate(
+                  widget.order.orderItems.length,
+                  (index) => OrderItemCard(
+                        item: widget.order.orderItems[index],
+                        status: widget.order.status,
+                      )),
             ],
           ),
         ],

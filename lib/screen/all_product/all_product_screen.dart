@@ -17,9 +17,11 @@ class AllProductScreen extends StatefulWidget {
     required this.user,
     this.brand,
     this.cate,
+    this.keyword,
   }) : super(key: key);
   final String? brand;
   final String? cate;
+  final String? keyword;
   final User user;
 
   @override
@@ -63,6 +65,22 @@ class _AllProductScreenState extends State<AllProductScreen> {
       });
       final response = await http.get(
           Uri.parse("$baseUrl/api/products/category/${widget.cate}"),
+          headers: {"Accept": "application/json"});
+
+      if (response.statusCode == 200) {
+        setState(() {
+          list = parseProducts(response.body);
+          loading = false;
+        });
+      } else {
+        throw Exception('Unable to fetch products from the REST API');
+      }
+    } else if (widget.keyword != null) {
+      setState(() {
+        loading = true;
+      });
+      final response = await http.get(
+          Uri.parse("$baseUrl/api/products?keyword=${widget.keyword}"),
           headers: {"Accept": "application/json"});
 
       if (response.statusCode == 200) {
@@ -169,10 +187,15 @@ class _AllProductScreenState extends State<AllProductScreen> {
                     "${widget.cate} Products",
                     style: TextStyle(color: Colors.black),
                   )
-                : Text(
-                    "All Products",
-                    style: TextStyle(color: Colors.black),
-                  ),
+                : (widget.keyword != null)
+                    ? Text(
+                        "Searching ${widget.keyword}",
+                        style: TextStyle(color: Colors.black),
+                      )
+                    : Text(
+                        "All Products",
+                        style: TextStyle(color: Colors.black),
+                      ),
       ),
       body: _loading
           ? Padding(
@@ -183,44 +206,51 @@ class _AllProductScreenState extends State<AllProductScreen> {
                 // backgroundColor: Colors.black,
               )),
             )
-          : RefreshIndicator(
-              onRefresh: _refresh,
-              child: CustomScrollView(
-                controller: _controller,
-                slivers: [
-                  SliverPadding(
-                    padding: EdgeInsets.only(
-                      right: getProportionateScreenWidth(20),
-                    ),
-                    sliver: SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 0.78,
-                        crossAxisCount: 2,
+          : showList.isEmpty
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text("List Product is empty"),
+                  ],
+                )
+              : RefreshIndicator(
+                  onRefresh: _refresh,
+                  child: CustomScrollView(
+                    controller: _controller,
+                    slivers: [
+                      SliverPadding(
+                        padding: EdgeInsets.only(
+                          right: getProportionateScreenWidth(20),
+                        ),
+                        sliver: SliverGrid(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            childAspectRatio: 0.78,
+                            crossAxisCount: 2,
+                          ),
+                          delegate: SliverChildBuilderDelegate(
+                            _buildProductItem,
+                            childCount: showList.length,
+                          ),
+                        ),
                       ),
-                      delegate: SliverChildBuilderDelegate(
-                        _buildProductItem,
-                        childCount: showList.length,
+                      SliverToBoxAdapter(
+                        child: _canLoadMore
+                            ? Column(
+                                children: [
+                                  const SizedBox(height: 20),
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 20),
+                                    alignment: Alignment.center,
+                                    child: const CircularProgressIndicator(),
+                                  ),
+                                ],
+                              )
+                            : const SizedBox(height: 20),
                       ),
-                    ),
+                    ],
                   ),
-                  SliverToBoxAdapter(
-                    child: _canLoadMore
-                        ? Column(
-                            children: [
-                              const SizedBox(height: 20),
-                              Container(
-                                padding: const EdgeInsets.only(bottom: 20),
-                                alignment: Alignment.center,
-                                child: const CircularProgressIndicator(),
-                              ),
-                            ],
-                          )
-                        : const SizedBox(height: 20),
-                  ),
-                ],
-              ),
-            ),
+                ),
     );
   }
 }
