@@ -1,9 +1,10 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, import_of_legacy_library_into_null_safe
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
+import 'package:mystore/constants.dart';
 import 'package:mystore/models/product.dart';
 import 'package:mystore/models/user.dart';
 import 'package:mystore/screen/home/components/product_card.dart';
@@ -14,8 +15,11 @@ class AllProductScreen extends StatefulWidget {
   const AllProductScreen({
     Key? key,
     required this.user,
+    this.brand,
+    this.cate,
   }) : super(key: key);
-
+  final String? brand;
+  final String? cate;
   final User user;
 
   @override
@@ -37,19 +41,53 @@ class _AllProductScreenState extends State<AllProductScreen> {
   bool _canLoadMore = true;
 
   Future<void> getProductListFromAPI() async {
-    setState(() {
-      loading = true;
-    });
-    final response = await http.get(Uri.parse("$baseUrl/api/products"),
-        headers: {"Accept": "application/json"});
-
-    if (response.statusCode == 200) {
+    if (widget.brand != null) {
       setState(() {
-        list = parseProducts(response.body);
-        loading = false;
+        loading = true;
       });
+      final response = await http.get(
+          Uri.parse("$baseUrl/api/products/brand/${widget.brand}"),
+          headers: {"Accept": "application/json"});
+
+      if (response.statusCode == 200) {
+        setState(() {
+          list = parseProducts(response.body);
+          loading = false;
+        });
+      } else {
+        throw Exception('Unable to fetch products from the REST API');
+      }
+    } else if (widget.cate != null) {
+      setState(() {
+        loading = true;
+      });
+      final response = await http.get(
+          Uri.parse("$baseUrl/api/products/category/${widget.cate}"),
+          headers: {"Accept": "application/json"});
+
+      if (response.statusCode == 200) {
+        setState(() {
+          list = parseProducts(response.body);
+          loading = false;
+        });
+      } else {
+        throw Exception('Unable to fetch products from the REST API');
+      }
     } else {
-      throw Exception('Unable to fetch products from the REST API');
+      setState(() {
+        loading = true;
+      });
+      final response = await http.get(Uri.parse("$baseUrl/api/products"),
+          headers: {"Accept": "application/json"});
+
+      if (response.statusCode == 200) {
+        setState(() {
+          list = parseProducts(response.body);
+          loading = false;
+        });
+      } else {
+        throw Exception('Unable to fetch products from the REST API');
+      }
     }
   }
 
@@ -121,48 +159,68 @@ class _AllProductScreenState extends State<AllProductScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          "All Products",
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
-      body: CustomScrollView(
-        controller: _controller,
-        slivers: [
-          CupertinoSliverRefreshControl(
-            onRefresh: _refresh,
-          ),
-          SliverPadding(
-            padding: EdgeInsets.only(
-              right: getProportionateScreenWidth(20),
-            ),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                childAspectRatio: 0.78,
-                crossAxisCount: 2,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                _buildProductItem,
-                childCount: showList.length,
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: _canLoadMore
-                ? Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      Container(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        alignment: Alignment.center,
-                        child: const CircularProgressIndicator(),
-                      ),
-                    ],
+        title: (widget.brand != null)
+            ? Text(
+                "${widget.brand} Products",
+                style: TextStyle(color: Colors.black),
+              )
+            : (widget.cate != null)
+                ? Text(
+                    "${widget.cate} Products",
+                    style: TextStyle(color: Colors.black),
                   )
-                : const SizedBox(height: 20),
-          ),
-        ],
+                : Text(
+                    "All Products",
+                    style: TextStyle(color: Colors.black),
+                  ),
       ),
+      body: _loading
+          ? Padding(
+              padding: EdgeInsets.only(top: getProportionateScreenHeight(10)),
+              child: const Center(
+                  child: CircularProgressIndicator(
+                color: kPrimaryColor,
+                // backgroundColor: Colors.black,
+              )),
+            )
+          : RefreshIndicator(
+              onRefresh: _refresh,
+              child: CustomScrollView(
+                controller: _controller,
+                slivers: [
+                  SliverPadding(
+                    padding: EdgeInsets.only(
+                      right: getProportionateScreenWidth(20),
+                    ),
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 0.78,
+                        crossAxisCount: 2,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        _buildProductItem,
+                        childCount: showList.length,
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: _canLoadMore
+                        ? Column(
+                            children: [
+                              const SizedBox(height: 20),
+                              Container(
+                                padding: const EdgeInsets.only(bottom: 20),
+                                alignment: Alignment.center,
+                                child: const CircularProgressIndicator(),
+                              ),
+                            ],
+                          )
+                        : const SizedBox(height: 20),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }

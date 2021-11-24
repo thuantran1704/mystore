@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mystore/constants.dart';
 import 'package:mystore/models/user.dart';
 import 'package:mystore/screen/admin/dashboard/components/drawer_menu.dart';
-import 'package:mystore/screen/admin/product_create/product_create.dart';
 import 'package:mystore/screen/admin/user_list/components/body.dart';
 
 class UserListScreen extends StatelessWidget {

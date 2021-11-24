@@ -1,4 +1,4 @@
-// ignore_for_file: curly_braces_in_flow_control_structures
+// ignore_for_file: curly_braces_in_flow_control_structures, import_of_legacy_library_into_null_safe
 
 import 'dart:convert';
 

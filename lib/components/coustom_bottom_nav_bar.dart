@@ -69,7 +69,7 @@ class CustomBottomNavBar extends StatelessWidget {
               IconButton(
                 icon: SvgPicture.asset(
                   "assets/icons/Chat bubble Icon.svg",
-                  color: MenuState.cart == selectedMenu
+                  color: MenuState.chat == selectedMenu
                       ? kPrimaryColor
                       : inActiveIconColor,
                 ),

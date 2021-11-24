@@ -1,18 +1,20 @@
+import 'package:mystore/models/user.dart';
+import 'package:mystore/screen/all_product/all_product_screen.dart';
 import 'package:mystore/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class Brands extends StatelessWidget {
-  const Brands({Key? key}) : super(key: key);
-
+  const Brands({Key? key, required this.user}) : super(key: key);
+  final User user;
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> brands = [
-      {"icon": "assets/icons/Asus.svg", "text": "Asus"},
-      {"icon": "assets/icons/Iogear.svg", "text": "IOGear"},
+      {"icon": "assets/icons/Asus.svg", "text": "ASUS"},
+      {"icon": "assets/icons/Iogear.svg", "text": "Iogear"},
       {"icon": "assets/icons/Acer.svg", "text": "Acer"},
       {"icon": "assets/icons/Cougar.svg", "text": "Cougar"},
-      {"icon": "assets/icons/Msi.svg", "text": "MSi"},
+      {"icon": "assets/icons/Msi.svg", "text": "MSI"},
     ];
     return Padding(
       padding:
@@ -26,7 +28,15 @@ class Brands extends StatelessWidget {
               (index) => BrandCard(
                     icon: brands[index]["icon"],
                     text: brands[index]["text"],
-                    press: () {},
+                    press: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AllProductScreen(
+                                    user: user,
+                                    brand: brands[index]["text"],
+                                  )));
+                    },
                   ))
         ],
       ),

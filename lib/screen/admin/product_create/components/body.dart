@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, prefer_typing_uninitialized_variables, non_constant_identifier_names
+// ignore_for_file: avoid_print, prefer_typing_uninitialized_variables, non_constant_identifier_names, import_of_legacy_library_into_null_safe, unnecessary_null_comparison
 
 import 'dart:convert';
 import 'dart:io';
@@ -292,39 +292,37 @@ class _BodyState extends State<Body> {
                         ],
                       ),
                       SizedBox(height: SizeConfig.screenHeight * 0.03),
-                      Container(
-                        child: SafeArea(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: getProportionateScreenWidth(250),
-                                    child: DefaultButton(
-                                      text: "Create Product",
-                                      press: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          _formKey.currentState!.save();
-                                          KeyboardUtil.hideKeyboard(context);
-                                          createProduct(
-                                            uploaded,
-                                            nameController.text,
-                                            descriptionController.text,
-                                            double.parse(priceController.text),
-                                            dropdownBrandValue.toString(),
-                                            dropdownCateValue.toString(),
-                                          );
-                                        }
-                                      },
-                                    ),
+                      SafeArea(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: getProportionateScreenWidth(250),
+                                  child: DefaultButton(
+                                    text: "Create Product",
+                                    press: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        _formKey.currentState!.save();
+                                        KeyboardUtil.hideKeyboard(context);
+                                        createProduct(
+                                          uploaded,
+                                          nameController.text,
+                                          descriptionController.text,
+                                          double.parse(priceController.text),
+                                          dropdownBrandValue.toString(),
+                                          dropdownCateValue.toString(),
+                                        );
+                                      }
+                                    },
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       )
                     ],

@@ -1,4 +1,4 @@
-// ignore_for_file: use_key_in_widget_constructors, non_constant_identifier_names
+// ignore_for_file: use_key_in_widget_constructors, non_constant_identifier_names, import_of_legacy_library_into_null_safe
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;

@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names, import_of_legacy_library_into_null_safe
+// ignore_for_file: non_constant_identifier_names, import_of_legacy_library_into_null_safe, deprecated_member_use, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:mystore/models/user.dart';
@@ -121,7 +121,7 @@ class ChatMessage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(this.name, style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(name, style: TextStyle(fontWeight: FontWeight.bold)),
             Container(
               margin: const EdgeInsets.only(top: 5.0),
               child: Text(text),
@@ -138,7 +138,7 @@ class ChatMessage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
-            Text(this.name),
+            Text(name),
             Container(
               margin: const EdgeInsets.only(top: 5.0),
               child: Text(text),
@@ -150,7 +150,7 @@ class ChatMessage extends StatelessWidget {
         margin: const EdgeInsets.only(left: 16.0),
         child: CircleAvatar(
             child: Text(
-          this.name[0],
+          name[0],
           style: TextStyle(fontWeight: FontWeight.bold),
         )),
       ),
@@ -163,7 +163,7 @@ class ChatMessage extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 10.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: this.type ? myMessage(context) : otherMessage(context),
+        children: type ? myMessage(context) : otherMessage(context),
       ),
     );
   }

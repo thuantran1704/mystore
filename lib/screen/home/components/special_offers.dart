@@ -1,3 +1,5 @@
+import 'package:mystore/models/user.dart';
+import 'package:mystore/screen/all_product/all_product_screen.dart';
 import 'package:mystore/screen/home/components/section_title.dart';
 import 'package:mystore/size_config.dart';
 import 'package:flutter/material.dart';
@@ -5,8 +7,9 @@ import 'package:flutter/material.dart';
 class SpecialOffers extends StatelessWidget {
   const SpecialOffers({
     Key? key,
+    required this.user,
   }) : super(key: key);
-
+  final User user;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -23,26 +26,58 @@ class SpecialOffers extends StatelessWidget {
               SpecialOfferCard(
                 image: "assets/images/keyboard-banner.jpg",
                 category: "Keyboard",
-                numOfBrands: 5,
-                press: () {},
+                numOfBrands: 3,
+                press: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AllProductScreen(
+                                user: user,
+                                cate: "Keyboard",
+                              )));
+                },
               ),
               SpecialOfferCard(
                 image: "assets/images/mouse-banner.jpg",
                 category: "Mouse",
                 numOfBrands: 3,
-                press: () {},
+                press: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AllProductScreen(
+                                user: user,
+                                cate: "Mouse",
+                              )));
+                },
               ),
               SpecialOfferCard(
                 image: "assets/images/headphone-banner.jpg",
                 category: "Headphone",
-                numOfBrands: 4,
-                press: () {},
+                numOfBrands: 2,
+                press: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AllProductScreen(
+                                user: user,
+                                cate: "Headphone",
+                              )));
+                },
               ),
               SpecialOfferCard(
                 image: "assets/images/rtx-banner.jpg",
                 category: "RTX",
-                numOfBrands: 4,
-                press: () {},
+                numOfBrands: 2,
+                press: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AllProductScreen(
+                                user: user,
+                                cate: "RTX",
+                              )));
+                },
               ),
               SizedBox(
                 width: getProportionateScreenWidth(20),
@@ -69,53 +104,56 @@ class SpecialOfferCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: getProportionateScreenWidth(20)),
-      child: SizedBox(
-        width: getProportionateScreenWidth(240),
-        height: getProportionateScreenHeight(108),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Stack(
-            children: [
-              Image.asset(
-                image,
-                fit: BoxFit.cover,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      const Color(0xFF343434).withOpacity(0.4),
-                      const Color(0xFF343434).withOpacity(0.15),
-                    ],
+    return GestureDetector(
+      onTap: press,
+      child: Padding(
+        padding: EdgeInsets.only(left: getProportionateScreenWidth(20)),
+        child: SizedBox(
+          width: getProportionateScreenWidth(240),
+          height: getProportionateScreenHeight(108),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Stack(
+              children: [
+                Image.asset(
+                  image,
+                  fit: BoxFit.cover,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        const Color(0xFF343434).withOpacity(0.4),
+                        const Color(0xFF343434).withOpacity(0.15),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: getProportionateScreenWidth(15),
-                  vertical: getProportionateScreenHeight(10),
-                ),
-                child: Text.rich(
-                  TextSpan(
-                    style: const TextStyle(color: Colors.white),
-                    children: [
-                      TextSpan(
-                        text: "$category\n",
-                        style: TextStyle(
-                          fontSize: getProportionateScreenWidth(18),
-                          fontWeight: FontWeight.bold,
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: getProportionateScreenWidth(15),
+                    vertical: getProportionateScreenHeight(10),
+                  ),
+                  child: Text.rich(
+                    TextSpan(
+                      style: const TextStyle(color: Colors.white),
+                      children: [
+                        TextSpan(
+                          text: "$category\n",
+                          style: TextStyle(
+                            fontSize: getProportionateScreenWidth(18),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      TextSpan(text: "$numOfBrands Brands")
-                    ],
+                        TextSpan(text: "$numOfBrands Brands")
+                      ],
+                    ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),

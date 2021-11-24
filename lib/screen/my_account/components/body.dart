@@ -1,3 +1,5 @@
+// ignore_for_file: import_of_legacy_library_into_null_safe
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -56,17 +58,19 @@ class _BodyState extends State<Body> {
   }
 
   void addError({required String error}) {
-    if (!errors.contains(error))
+    if (!errors.contains(error)) {
       setState(() {
         errors.add(error);
       });
+    }
   }
 
   void removeError({required String error}) {
-    if (errors.contains(error))
+    if (errors.contains(error)) {
       setState(() {
         errors.remove(error);
       });
+    }
   }
 
   void initScreen() {
@@ -116,7 +120,6 @@ class _BodyState extends State<Body> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initScreen();
   }
@@ -140,7 +143,7 @@ class _BodyState extends State<Body> {
                   ),
                 ),
                 Align(
-                  alignment: Alignment(0, 0.8),
+                  alignment: const Alignment(0, 0.8),
                   child: MaterialButton(
                     minWidth: 0,
                     elevation: 0.5,
@@ -182,7 +185,7 @@ class _BodyState extends State<Body> {
                   FormError(errors: errors),
                   SizedBox(height: getProportionateScreenHeight(20)),
                   MaterialButton(
-                    child: Text(
+                    child: const Text(
                       "Update",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,

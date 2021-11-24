@@ -1,3 +1,5 @@
+// ignore_for_file: import_of_legacy_library_into_null_safe, prefer_typing_uninitialized_variables, unnecessary_null_comparison, avoid_print, non_constant_identifier_names
+
 import 'dart:convert';
 import 'dart:io';
 

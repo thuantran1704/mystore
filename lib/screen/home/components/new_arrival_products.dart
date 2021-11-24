@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, import_of_legacy_library_into_null_safe
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -11,7 +11,6 @@ import 'package:mystore/screen/home/components/product_card.dart';
 import 'package:mystore/screen/home/components/section_title.dart';
 import 'package:mystore/screen/product_details/details_screen.dart';
 import 'package:mystore/size_config.dart';
-import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 class NewArrival extends StatefulWidget {
   const NewArrival({

@@ -1,3 +1,5 @@
+// ignore_for_file: import_of_legacy_library_into_null_safe
+
 import 'dart:convert';
 
 import 'package:auto_size_text_field/auto_size_text_field.dart';
@@ -294,7 +296,7 @@ class _BodyState extends State<Body> {
                                                 ],
                                               ),
                                       ),
-                                      SizedBox(height: 20)
+                                      const SizedBox(height: 20)
                                     ],
                                   ))
                             ],

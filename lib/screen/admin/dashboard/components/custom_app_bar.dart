@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:mystore/controller.dart';
 import 'package:mystore/constants.dart';
-import 'package:mystore/responsive.dart';
 import 'package:provider/provider.dart';
 
 class CustomAppbar extends StatelessWidget {
@@ -13,14 +11,13 @@ class CustomAppbar extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-
-          IconButton(
-            onPressed: context.read<Controller>().controlMenu,
-            icon: Icon(
-              Icons.menu,
-              color: kTextColor.withOpacity(0.5),
-            ),
+        IconButton(
+          onPressed: context.read<Controller>().controlMenu,
+          icon: Icon(
+            Icons.menu,
+            color: kTextColor.withOpacity(0.5),
           ),
+        ),
         // const Expanded(child: SearchField()),
         const ProfileInfo()
       ],
@@ -60,29 +57,6 @@ class ProfileInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // Padding(
-        //   padding: const EdgeInsets.all(appPadding),
-        //   child: Stack(
-        //     children: [
-        //       SvgPicture.asset(
-        //         "assets/icons/Bell.svg",
-        //         height: 25,
-        //         color: kTextColor.withOpacity(0.8),
-        //       ),
-        //       Positioned(
-        //         right: 0,
-        //         child: Container(
-        //           height: 10,
-        //           width: 10,
-        //           decoration: const BoxDecoration(
-        //             shape: BoxShape.circle,
-        //             color: Colors.red,
-        //           ),
-        //         ),
-        //       )
-        //     ],
-        //   ),
-        // ),
         Container(
           margin: const EdgeInsets.only(left: appPadding),
           padding: const EdgeInsets.symmetric(

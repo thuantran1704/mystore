@@ -1,6 +1,7 @@
+// ignore_for_file: import_of_legacy_library_into_null_safe
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mystore/components/default_button.dart';
 import 'package:mystore/constants.dart';
 import 'package:mystore/models/reciept.dart';
 import 'package:mystore/models/user.dart';
@@ -332,7 +333,7 @@ class _ReceiptDetailScreenState extends State<ReceiptDetailScreen> {
                               ),
                             ],
                           )
-                        : SizedBox(),
+                        : const SizedBox(),
                   ],
                 ),
         ),
