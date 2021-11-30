@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mystore/models/order.dart';
+import 'package:mystore/models/user.dart';
 import 'package:mystore/screen/order_details/components/order_item_card.dart';
 import 'package:mystore/size_config.dart';
 
@@ -7,10 +8,11 @@ class OrderItems extends StatefulWidget {
   const OrderItems({
     Key? key,
     required this.order,
+    required this.user,
   }) : super(key: key);
 
   final Order order;
-
+  final User user;
   @override
   State<OrderItems> createState() => _OrderItemsState();
 }
@@ -36,6 +38,7 @@ class _OrderItemsState extends State<OrderItems> {
                   (index) => OrderItemCard(
                         item: widget.order.orderItems[index],
                         status: widget.order.status,
+                        user: widget.user,
                       )),
             ],
           ),

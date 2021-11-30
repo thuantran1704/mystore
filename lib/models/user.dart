@@ -10,6 +10,7 @@ class User {
   final String password;
   final String phone;
   final List<Cart> cart;
+  final List<Voucher> voucher;
   final bool isDisable;
   final Role role;
   final UserAddress userAddress;
@@ -25,6 +26,7 @@ class User {
     required this.password,
     required this.phone,
     required this.cart,
+    required this.voucher,
     required this.token,
   });
 
@@ -36,6 +38,8 @@ class User {
       password: json["password"],
       phone: json["phone"],
       cart: List<Cart>.from(json["cart"].map((x) => Cart.fromJson(x))),
+      voucher:
+          List<Voucher>.from(json["voucher"].map((x) => Voucher.fromJson(x))),
       isDisable: json["isDisable"],
       role: Role.fromJson(json["role"]),
       userAddress: UserAddress.fromJson(json["userAddress"]),
@@ -53,6 +57,7 @@ class User {
         "password": password,
         "phone": phone,
         "cart": List<dynamic>.from(cart.map((x) => x.toJson())),
+        "voucher": List<dynamic>.from(voucher.map((x) => x.toJson())),
       };
 }
 
@@ -94,6 +99,34 @@ class Cart {
         "image": image,
         "price": price,
         "product": product,
+      };
+}
+
+class Voucher {
+  Voucher({
+    required this.id,
+    required this.name,
+    required this.discount,
+    required this.voucherId,
+  });
+
+  String id;
+  String name;
+  int discount;
+  String voucherId;
+
+  factory Voucher.fromJson(Map<String, dynamic> json) => Voucher(
+        id: json["_id"],
+        name: json["name"],
+        discount: json["discount"],
+        voucherId: json["voucherId"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "_id": id,
+        "name": name,
+        "discount": discount,
+        "voucherId": voucherId,
       };
 }
 

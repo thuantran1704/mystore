@@ -38,11 +38,15 @@ dependencies:
   provider: ^6.0.1
   syncfusion_flutter_charts: ^19.3.54
   charts_flutter: ^0.12.0
+  flutter_rating_bar: ^4.0.0
+  flutter_easyloading: ^3.0.3
   dio: 
   http: 
   image_picker: 
   http_parser: 
-  flutter_dialogflow: 
+  flutter_dialogflow:
+  bubble:
+  intl: 
   flutter:
     sdk: flutter
 
@@ -77,7 +81,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/mystore-chatbot-22c110b0864f.json
+    - assets/mystore-chatbot-24a69c746812.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

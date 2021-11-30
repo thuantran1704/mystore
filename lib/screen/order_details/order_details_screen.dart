@@ -203,7 +203,10 @@ class _OrderScreenState extends State<OrderScreen> {
                     SizedBox(height: getProportionateScreenHeight(6)),
                     ShippingInfo(order: order),
                     SizedBox(height: getProportionateScreenHeight(6)),
-                    OrderItems(order: order),
+                    OrderItems(
+                      order: order,
+                      user: widget.user,
+                    ),
                     Divider(
                       color: Colors.black54,
                       height: getProportionateScreenHeight(20),

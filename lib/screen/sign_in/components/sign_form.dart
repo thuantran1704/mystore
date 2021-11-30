@@ -1,7 +1,7 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, import_of_legacy_library_into_null_safe
-
 import 'dart:convert';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter/material.dart';
 import 'package:mystore/components/default_button.dart';
 import 'package:mystore/components/form_error.dart';
@@ -34,6 +34,10 @@ class _SignFormState extends State<SignForm> {
   final baseUrl = "https://mystore-backend.herokuapp.com";
 
   Future<void> login(String email, String password) async {
+    await EasyLoading.show(
+      status: 'Logining...',
+      maskType: EasyLoadingMaskType.black,
+    );
     var response = await http.post(Uri.parse("$baseUrl/api/users/login"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -50,6 +54,7 @@ class _SignFormState extends State<SignForm> {
                 builder: (context) => DashBoardScreen(
                       user: user,
                     )));
+        await EasyLoading.dismiss();
       } else {
         Navigator.push(
             context,
@@ -57,8 +62,10 @@ class _SignFormState extends State<SignForm> {
                 builder: (context) => HomeScreen(
                       user: user,
                     )));
+        await EasyLoading.dismiss();
       }
     } else {
+      await EasyLoading.dismiss();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Invalid Credentials"),

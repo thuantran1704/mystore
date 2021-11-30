@@ -74,7 +74,7 @@ class ProductCard extends StatelessWidget {
                       children: [
                         SvgPicture.asset("assets/icons/Star Icon.svg"),
                         const SizedBox(width: 5),
-                        Text(product.rating.toString(),
+                        Text(product.rating.toStringAsFixed(1),
                             style: const TextStyle(
                               fontWeight: FontWeight.w600,
                             )),

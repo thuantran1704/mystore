@@ -38,7 +38,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: Row(
                   children: [
                     Text(
-                      ratting.toString(),
+                      ratting.toStringAsFixed(1),
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(width: 5),

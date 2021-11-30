@@ -23,19 +23,31 @@ class _BodyState extends State<Body> {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Flexible(
-              child: TextField(
-                controller: _textController,
-                onSubmitted: _handleSubmitted,
-                decoration:
-                    const InputDecoration.collapsed(hintText: "Send a message"),
+            Padding(
+              padding: EdgeInsets.only(
+                left: getProportionateScreenWidth(12),
+              ),
+              child: SizedBox(
+                width: SizeConfig.screenWidth * 0.76,
+                height: getProportionateScreenHeight(40),
+                child: TextFormField(
+                  controller: _textController,
+                  onFieldSubmitted: _handleSubmitted,
+                  decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(20, 8, 20, 0),
+                      hintText: "Send a message"),
+                ),
               ),
             ),
             Container(
-                margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                margin: const EdgeInsets.symmetric(horizontal: 3.5),
                 child: IconButton(
-                    icon: const Icon(Icons.send),
+                    icon: const Icon(
+                      Icons.send,
+                      size: 34,
+                    ),
                     onPressed: () {
                       if (_textController.text.trim().isNotEmpty) {
                         _handleSubmitted(_textController.text.trim());
@@ -50,7 +62,7 @@ class _BodyState extends State<Body> {
   void Response(query) async {
     _textController.clear();
     AuthGoogle authGoogle =
-        await AuthGoogle(fileJson: "assets/mystore-chatbot-22c110b0864f.json")
+        await AuthGoogle(fileJson: "assets/mystore-chatbot-24a69c746812.json")
             .build();
     Dialogflow dialogflow =
         Dialogflow(authGoogle: authGoogle, language: Language.english);
@@ -67,7 +79,6 @@ class _BodyState extends State<Body> {
   }
 
   void _handleSubmitted(String text) {
-    _textController.clear();
     ChatMessage message = ChatMessage(
       text: text,
       name: widget.user.name,
@@ -77,6 +88,10 @@ class _BodyState extends State<Body> {
       _messages.insert(0, message);
     });
     Response(text);
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
   }
 
   @override
