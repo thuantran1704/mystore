@@ -18,6 +18,7 @@ class Order {
     required this.shippingAddress,
     required this.taxPrice,
     required this.shippingPrice,
+    required this.discountPrice,
     required this.totalPrice,
     required this.isPaid,
     required this.isDelivered,
@@ -33,6 +34,7 @@ class Order {
   ShippingAddress shippingAddress;
   double taxPrice;
   int shippingPrice;
+  double discountPrice;
   double totalPrice;
   bool isPaid;
   bool isDelivered;
@@ -48,6 +50,7 @@ class Order {
         shippingAddress: ShippingAddress.fromJson(json["shippingAddress"]),
         taxPrice: json["taxPrice"].toDouble(),
         shippingPrice: json["shippingPrice"],
+        discountPrice: json["discountPrice"].toDouble(),
         totalPrice: json["totalPrice"].toDouble(),
         isPaid: json["isPaid"],
         isDelivered: json["isDelivered"],
@@ -65,6 +68,7 @@ class Order {
         "shippingAddress": shippingAddress.toJson(),
         "taxPrice": taxPrice,
         "shippingPrice": shippingPrice,
+        "discountPrice": discountPrice,
         "totalPrice": totalPrice,
         "isPaid": isPaid,
         "isDelivered": isDelivered,

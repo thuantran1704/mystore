@@ -1,8 +1,9 @@
-// ignore_for_file: curly_braces_in_flow_control_structures, import_of_legacy_library_into_null_safe
+// ignore_for_file: curly_braces_in_flow_control_structures, import_of_legacy_library_into_null_safe, prefer_const_constructors
 
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mystore/components/default_button.dart';
 import 'package:mystore/components/form_error.dart';
@@ -52,6 +53,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   double itemsprice = 0;
   double taxPrice = 0;
   double shippingPrice = 0;
+  double discountPrice = 0;
+  String discountPercen = "0";
   double? totalPrice;
 
   static const baseUrl = "https://mystore-backend.herokuapp.com";
@@ -66,6 +69,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       double itemsprice,
       double taxPrice,
       double shippingPrice,
+      double discountPrice,
       double? totalPrice) async {
     List jsonList = [];
     orderItems.map((item) => jsonList.add(item.toJson())).toList();
@@ -87,6 +91,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           "itemsPrice": itemsprice,
           "taxPrice": taxPrice,
           "shippingPrice": shippingPrice,
+          "discountPrice": discountPrice,
           "totalPrice": totalPrice,
         }));
 
@@ -152,13 +157,18 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         TextEditingController(text: widget.user.userAddress.country);
     postalCodeController =
         TextEditingController(text: widget.user.userAddress.postalCode);
-    // fullAddress =
-    //     "${addressController.text}, ${cityController.text}, ${countryController.text}, ${postalCodeController.text}";
+
     itemsprice = widget.total;
-    taxPrice = double.parse((widget.total * 0.1).toStringAsFixed(2));
+    taxPrice = double.parse((itemsprice * 0.1).toStringAsFixed(2));
     itemsprice >= 100 ? shippingPrice = 0 : shippingPrice = 2;
     totalPrice = double.parse(
         (itemsprice + taxPrice + shippingPrice).toStringAsFixed(2));
+  }
+
+  void calSum() {
+    totalPrice = double.parse(
+        (itemsprice + taxPrice + shippingPrice - discountPrice)
+            .toStringAsFixed(2));
   }
 
   @override
@@ -319,7 +329,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     postalCodeFormInput(),
                     SizedBox(height: SizeConfig.screenHeight * 0.02),
                     FormError(errors: errors),
-
                     SizedBox(height: SizeConfig.screenHeight * 0.01),
                     const CustomTitle(title: "Payment Method "),
                     paymentMethodRadioButton(),
@@ -337,30 +346,24 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       padding: const EdgeInsets.only(left: 20),
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Tax Price : \t\t\t\t\t\t\t\t \$ $taxPrice",
-                                style: const TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.w700),
-                              ),
-                            ],
+                          PriceRow(
+                            title: "Tax Price :",
+                            price: taxPrice,
                           ),
                           const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Shipping Price :  \$ $shippingPrice",
-                                textAlign: TextAlign.justify,
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
+                          PriceRow(
+                            title: "Shipping Price :",
+                            price: shippingPrice,
                           ),
+                          (discountPercen != "0")
+                              ? SizedBox(height: 8)
+                              : SizedBox(),
+                          (discountPercen != "0")
+                              ? PriceRow(
+                                  title: "Discount Price :",
+                                  price: -discountPrice,
+                                )
+                              : SizedBox(),
                           const SizedBox(height: 20),
                         ],
                       ),
@@ -397,6 +400,93 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              InkWell(
+                onTap: () {
+                  showModalBottomSheet<String>(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30.0),
+                          topRight: Radius.circular(30.0)),
+                    ),
+                    builder: (BuildContext context) {
+                      return Padding(
+                        padding: MediaQuery.of(context).viewInsets,
+                        child: Container(
+                          height: SizeConfig.screenHeight * 0.5,
+                          color: Colors.white,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              ...List.generate(
+                                  widget.user.voucher.length,
+                                  (index) => VoucherItemCard(
+                                      voucher: widget.user.voucher[index])),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ).then((value) {
+                    if (value != null) {
+                      setState(() {
+                        discountPercen = value;
+                        discountPrice = itemsprice * double.parse(value) / 100;
+                        discountPrice =
+                            double.parse(discountPrice.toStringAsFixed(2));
+                        calSum();
+                      });
+                    }
+                  });
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      height: getProportionateScreenWidth(40),
+                      width: getProportionateScreenWidth(40),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFF5F6F9),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: SvgPicture.asset("assets/icons/receipt.svg"),
+                    ),
+                    Spacer(),
+                    (discountPercen == "20")
+                        ? Text(
+                            "XMASVOUCHER",
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.black87),
+                          )
+                        : (discountPercen == "15")
+                            ? Text(
+                                "DISCOUNT15",
+                                style: const TextStyle(
+                                    fontSize: 16, color: Colors.black87),
+                              )
+                            : (discountPercen == "10")
+                                ? Text(
+                                    "DISCOUNT10",
+                                    style: const TextStyle(
+                                        fontSize: 16, color: Colors.black87),
+                                  )
+                                : Text("Add voucher code"),
+                    const SizedBox(width: 10),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 12,
+                      color: kTextColor,
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(height: 2),
+              Divider(color: Colors.white),
+              SizedBox(height: 2),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -430,6 +520,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                               itemsprice,
                               taxPrice,
                               shippingPrice,
+                              discountPrice,
                               totalPrice);
                         }
                       },
@@ -582,6 +673,98 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         // suffixIcon:
         //     CustomSurfixIcon(svgIcon: "assets/icons/Location point.svg"),
       ),
+    );
+  }
+}
+
+class VoucherItemCard extends StatelessWidget {
+  const VoucherItemCard({
+    Key? key,
+    required this.voucher,
+  }) : super(key: key);
+
+  final Voucher voucher;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(
+            bottom: getProportionateScreenHeight(10),
+            left: getProportionateScreenWidth(20),
+          ),
+          child: SizedBox(
+            width: getProportionateScreenWidth(68),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey.shade400,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: (voucher.discount == 10)
+                    ? Image.asset("assets/images/discount10.jpg")
+                    : (voucher.discount == 15)
+                        ? Image.asset("assets/images/discount15.jpg")
+                        : Image.asset("assets/images/discount20.jpg"),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                voucher.name, // product name here
+                style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+                maxLines: 2,
+              ),
+              const SizedBox(height: 4),
+              Text.rich(
+                TextSpan(
+                  text:
+                      "Discount ${voucher.discount.toString()}% \non total items price",
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 16),
+        Padding(
+          padding: EdgeInsets.only(right: getProportionateScreenWidth(15)),
+          child: SizedBox(
+            width: getProportionateScreenWidth(80),
+            height: getProportionateScreenHeight(40),
+            child: ElevatedButton(
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  primary: Colors.white,
+                  backgroundColor: kPrimaryColor,
+                ),
+                child: const Text(
+                  'Apply',
+                  style:
+                      TextStyle(fontSize: 16, backgroundColor: kPrimaryColor),
+                ),
+                onPressed: () {
+                  print(" voucher.discount.toString() : " +
+                      voucher.discount.toString());
+                  Navigator.pop(context, voucher.discount.toString());
+                }),
+          ),
+        )
+      ],
     );
   }
 }

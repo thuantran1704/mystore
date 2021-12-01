@@ -238,6 +238,15 @@ class _OrderScreenState extends State<OrderScreen> {
                           PriceRow(
                               title: "Shipping price :",
                               price: order.shippingPrice.toDouble()),
+                          (order.discountPrice != 0)
+                              ? SizedBox(
+                                  height: getProportionateScreenHeight(6))
+                              : const SizedBox(),
+                          (order.discountPrice != 0)
+                              ? PriceRow(
+                                  title: "Discount price :",
+                                  price: -order.discountPrice.toDouble())
+                              : const SizedBox(),
                           SizedBox(height: getProportionateScreenHeight(6)),
                           PriceRow(
                               title: "Total price :", price: order.totalPrice),
@@ -541,7 +550,7 @@ class PriceRow extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                "\$${(price).toStringAsFixed(2)}",
+                "${(price).toStringAsFixed(2)}\$",
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(15),
                   color: Colors.black,
