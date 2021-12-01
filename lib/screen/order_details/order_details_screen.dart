@@ -231,7 +231,8 @@ class _OrderScreenState extends State<OrderScreen> {
                               title: "Items price :",
                               price: order.totalPrice -
                                   order.shippingPrice -
-                                  order.taxPrice),
+                                  order.taxPrice +
+                                  order.discountPrice),
                           SizedBox(height: getProportionateScreenHeight(6)),
                           PriceRow(title: "Tax price :", price: order.taxPrice),
                           SizedBox(height: getProportionateScreenHeight(6)),

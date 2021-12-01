@@ -1,5 +1,6 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, import_of_legacy_library_into_null_safe, prefer_const_constructors
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -105,6 +106,17 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     orderId: response.body.toString().substring(1, 25),
                     user: widget.user,
                   )));
+      if (discountPercen != "0") {
+        Timer(Duration(seconds: 4), () {
+          removeVoucher(widget.user.token, discountPercen);
+        });
+      }
+      // sendEmail(
+      //   email: widget.user.email,
+      //   name: widget.user.name,
+      //   orderId: response.body.toString().substring(1, 25),
+      //   totalPrice: totalPrice.toString(),
+      // );
     } else {
       _showToast("Order created failed");
     }
@@ -123,6 +135,79 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       _showToast("Remove Failed");
 
       throw Exception('Unable to fetch products from the REST API');
+    }
+  }
+
+  Future<void> removeVoucher(String token, String percen) async {
+    var id = "";
+    if (percen == "10") {
+      id = "61a5b36e386b752278e13400";
+    } else if (percen == "15") {
+      id = "61a5b573dba9751ee8093113";
+    } else if (percen == "20") {
+      id = "61a5b3fa386b752278e13407";
+    }
+
+    final response = await http.delete(
+        Uri.parse("$baseUrl/api/users/voucher/$id/remove"),
+        headers: <String, String>{
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json; charset=UTF-8',
+        });
+
+    if (response.statusCode == 200) {
+      setState(() {
+        widget.user.voucher = parseVoucher(response.body);
+        print("widget.user.voucher : " + widget.user.voucher.length.toString());
+      });
+    } else {
+      _showToast("Remove Failed");
+      throw Exception('Unable to fetch products from the REST API');
+    }
+  }
+
+  Future sendEmail(
+      {required String name,
+      required String email,
+      required String orderId,
+      required String totalPrice}) async {
+    var serviceId = "service_szh30k9";
+    var templateId = "template_43lfx7g";
+    var userEmailId = "user_B4JHb8P6ynrwLb62unWdf";
+
+    final url = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
+
+    final response = await http.post(url,
+        headers: {
+          'origin': 'http://localhost',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: json.encode({
+          'service_id': serviceId,
+          'template_id': templateId,
+          'user_id': userEmailId,
+          'template_params': {
+            'user_name': name, // tên ng nhận
+            'user_email': email, // email ng gửi
+            'to_email': "thuantran1704@gmail.com", // email nhận
+            'user_subject': "MyStore",
+            'user_message':
+                "Thank you for your order. \nYour order id is $orderId with total price: $totalPrice\$"
+          }
+        }));
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg: "Order Successfully. We sent a email to you",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Send Failed"),
+      ));
     }
   }
 
@@ -758,8 +843,6 @@ class VoucherItemCard extends StatelessWidget {
                       TextStyle(fontSize: 16, backgroundColor: kPrimaryColor),
                 ),
                 onPressed: () {
-                  print(" voucher.discount.toString() : " +
-                      voucher.discount.toString());
                   Navigator.pop(context, voucher.discount.toString());
                 }),
           ),

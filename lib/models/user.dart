@@ -10,7 +10,7 @@ class User {
   final String password;
   final String phone;
   final List<Cart> cart;
-  final List<Voucher> voucher;
+  List<Voucher> voucher;
   final bool isDisable;
   final Role role;
   final UserAddress userAddress;
@@ -100,6 +100,11 @@ class Cart {
         "price": price,
         "product": product,
       };
+}
+
+List<Voucher> parseVoucher(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  return parsed.map<Voucher>((json) => Voucher.fromJson(json)).toList();
 }
 
 class Voucher {
