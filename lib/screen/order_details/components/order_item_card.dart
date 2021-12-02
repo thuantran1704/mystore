@@ -115,7 +115,8 @@ class _OrderItemCardState extends State<OrderItemCard> {
                       ],
                     ),
                   ),
-                  (widget.status == 3 || widget.status == 4)
+                  ((widget.status == 3 || widget.status == 4) &&
+                          widget.user.role.name.toLowerCase() != "admin")
                       ? Padding(
                           padding: EdgeInsets.only(
                             right: getProportionateScreenWidth(30),

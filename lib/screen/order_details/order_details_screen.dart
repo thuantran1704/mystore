@@ -1,5 +1,8 @@
 // ignore_for_file: avoid_print, import_of_legacy_library_into_null_safe
 
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mystore/components/default_button.dart';
 import 'package:mystore/constants.dart';
@@ -108,13 +111,74 @@ class _OrderScreenState extends State<OrderScreen> {
         });
 
     if (response.statusCode == 200) {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  OrderScreen(orderId: widget.orderId, user: widget.user)));
+      if (order.discountPrice == 0) {
+        addVoucher(
+            widget.user.token,
+            (order.totalPrice -
+                order.shippingPrice -
+                order.taxPrice +
+                order.discountPrice),
+            0);
+        Timer(const Duration(seconds: 4), () {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      OrderScreen(orderId: widget.orderId, user: widget.user)));
+        });
+      } else {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    OrderScreen(orderId: widget.orderId, user: widget.user)));
+      }
     } else {
       throw Exception('Unable to update order from the REST API');
+    }
+  }
+
+  Future<void> addVoucher(
+      String token, double itemPrice, double discountPrice) async {
+    var id = "";
+    if (discountPrice != 0) {
+      if (itemPrice / discountPrice > 4 && itemPrice / discountPrice < 6) {
+        id = "61a5b3fa386b752278e13407"; //XMASVOUCHER
+      } else if (itemPrice / discountPrice > 6 &&
+          itemPrice / discountPrice < 7) {
+        id = "61a5b573dba9751ee8093113"; //DISCOUNT15
+      } else if (itemPrice / discountPrice > 9 &&
+          itemPrice / discountPrice < 11) {
+        id = "61a5b36e386b752278e13400"; //DISCOUNT10
+      }
+    } else {
+      if (itemPrice >= 500) {
+        id = "61a5b3fa386b752278e13407"; //XMASVOUCHER
+
+      } else if (itemPrice >= 350) {
+        id = "61a5b573dba9751ee8093113"; //DISCOUNT15
+
+      } else if (itemPrice >= 200) {
+        id = "61a5b36e386b752278e13400"; //DISCOUNT10
+      }
+    }
+
+    var response = await http.post(Uri.parse("$baseUrl/api/users/voucher/add"),
+        headers: <String, String>{
+          'Authorization': 'Bearer ${widget.user.token}',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({"id": id}));
+
+    if (response.statusCode == 201) {
+      //Add to voucher Successfully
+      setState(() {
+        widget.user.voucher = parseVoucher(response.body);
+      });
+    } else if (response.statusCode == 202) {
+      // voucher already added to voucher list
+    } else {
+      throw Exception('Unable to add voucher from the REST API');
     }
   }
 
@@ -130,13 +194,31 @@ class _OrderScreenState extends State<OrderScreen> {
         });
 
     if (response.statusCode == 200) {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  OrderScreen(orderId: widget.orderId, user: widget.user)));
+      if (order.discountPrice != 0) {
+        addVoucher(
+            widget.user.token,
+            (order.totalPrice -
+                order.shippingPrice -
+                order.taxPrice +
+                order.discountPrice),
+            order.discountPrice);
+
+        Timer(const Duration(seconds: 2), () {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      OrderScreen(orderId: widget.orderId, user: widget.user)));
+        });
+      } else {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    OrderScreen(orderId: widget.orderId, user: widget.user)));
+      }
     } else {
-      throw Exception('Unable to fetch products from the REST API');
+      throw Exception('Unable to cancel order from the REST API');
     }
   }
 

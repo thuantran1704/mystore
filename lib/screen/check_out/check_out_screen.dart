@@ -97,20 +97,33 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         }));
 
     if (response.statusCode == 201) {
-      _showToast("Order created successfully ");
-      removeAllCartItem(widget.user.token);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => OrderScreen(
-                    orderId: response.body.toString().substring(1, 25),
-                    user: widget.user,
-                  )));
       if (discountPercen != "0") {
-        Timer(Duration(seconds: 4), () {
-          removeVoucher(widget.user.token, discountPercen);
+        removeVoucher(widget.user.token, discountPercen);
+        Timer(Duration(seconds: 3), () {
+          _showToast("Order created successfully ");
+
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => OrderScreen(
+                        orderId: response.body.toString().substring(1, 25),
+                        user: widget.user,
+                      )));
         });
+      } else {
+        _showToast("Order created successfully ");
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => OrderScreen(
+                      orderId: response.body.toString().substring(1, 25),
+                      user: widget.user,
+                    )));
       }
+
+      Timer(Duration(seconds: 3), () {
+        removeAllCartItem(widget.user.token);
+      });
       // sendEmail(
       //   email: widget.user.email,
       //   name: widget.user.name,
@@ -158,7 +171,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     if (response.statusCode == 200) {
       setState(() {
         widget.user.voucher = parseVoucher(response.body);
-        print("widget.user.voucher : " + widget.user.voucher.length.toString());
       });
     } else {
       _showToast("Remove Failed");
