@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 class Body extends StatefulWidget {
   const Body({Key? key, required this.user}) : super(key: key);
   final User user;
+
   @override
   _BodyState createState() => _BodyState();
 }
@@ -177,6 +178,34 @@ class _BodyState extends State<Body> {
                       ],
                     ),
                   ),
+                  SizedBox(height: getProportionateScreenHeight(20)),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: getProportionateScreenWidth(20),
+                        right: getProportionateScreenWidth(20)),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: getProportionateScreenHeight(56),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          primary: Colors.white,
+                          backgroundColor: backgroudColor,
+                        ),
+                        onPressed: () {
+                          getStatisticData(getText(dateFrom), getText(dateTo));
+                        },
+                        child: Text(
+                          "Statistic",
+                          style: TextStyle(
+                            fontSize: getProportionateScreenWidth(18),
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   SizedBox(
                     height: 600,
                     child: Card(
@@ -201,34 +230,6 @@ class _BodyState extends State<Body> {
                       ),
                     ),
                   ),
-                  SizedBox(height: getProportionateScreenHeight(20)),
-                  Padding(
-                      padding: EdgeInsets.only(
-                          left: getProportionateScreenWidth(20),
-                          right: getProportionateScreenWidth(20)),
-                      child: SizedBox(
-                        width: double.infinity,
-                        height: getProportionateScreenHeight(56),
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            primary: Colors.white,
-                            backgroundColor: backgroudColor,
-                          ),
-                          onPressed: () {
-                            getStatisticData(
-                                getText(dateFrom), getText(dateTo));
-                          },
-                          child: Text(
-                            "Statistic",
-                            style: TextStyle(
-                              fontSize: getProportionateScreenWidth(18),
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      )),
                   SizedBox(height: getProportionateScreenHeight(20)),
                 ],
               ),
