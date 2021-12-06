@@ -19,7 +19,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          "Profile",
+          "Chat",
           style: TextStyle(color: Colors.black),
         ),
       ),

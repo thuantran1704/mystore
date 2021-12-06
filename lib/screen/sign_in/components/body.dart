@@ -6,7 +6,15 @@ import 'package:mystore/screen/sign_in/components/sign_form.dart';
 import 'package:mystore/components/social_card.dart';
 import 'package:mystore/size_config.dart';
 
-class Body extends StatelessWidget {
+class Body extends StatefulWidget {
+  @override
+  State<Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  // bool _isLoggedIn = false;
+  // Map _userObj = {};
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -43,7 +51,21 @@ class Body extends StatelessWidget {
                     ),
                     SocialCard(
                       asset: "assets/icons/facebook-2.svg",
-                      press: () {},
+                      press: () {
+                        // FacebookAuth.instance.login(permissions: [
+                        //   "public_profile",
+                        //   "email"
+                        // ]).then((value) {
+                        //   FacebookAuth.instance.getUserData().then((userData) {
+                        //     setState(() {
+                        //       print("userData : " + userData.toString());
+                        //       _isLoggedIn = true;
+                        //       _userObj = userData;
+                        //       print("_userObj : " + _userObj.toString());
+                        //     });
+                        //   });
+                        // });
+                      },
                     ),
                     SocialCard(
                       asset: "assets/icons/twitter.svg",

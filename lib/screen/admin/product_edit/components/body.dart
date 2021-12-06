@@ -53,7 +53,7 @@ class _BodyState extends State<Body> {
 
   Future getImage() async {
     try {
-      final image = await ImagePicker().getImage(source: ImageSource.gallery);
+      final image = await ImagePicker.pickImage(source: ImageSource.gallery);
       if (image == null) return;
       final imageTemporary = File(image.path);
       setState(() {

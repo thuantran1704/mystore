@@ -58,6 +58,22 @@ class _BodyState extends State<Body> {
     }
   }
 
+  Future<void> deleteProduct(String id) async {
+    var response = await http.delete(
+      Uri.parse("$baseUrl/api/products/$id"),
+      headers: <String, String>{
+        'Authorization': 'Bearer ${widget.user.token}',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    print("response.statusCode : " + response.statusCode.toString());
+    if (response.statusCode == 200) {
+      _showToast("Delete product successful");
+    } else {
+      _showToast("Delete product Failed");
+    }
+  }
+
   void _showToast(String msg) {
     Fluttertoast.showToast(
         msg: msg,
@@ -153,7 +169,10 @@ class _BodyState extends State<Body> {
                             caption: 'Delete',
                             color: const Color(0xFFFFE6E6),
                             icon: Icons.delete,
-                            onTap: () => {list.removeAt(index)},
+                            onTap: () => {
+                              deleteProduct(list[index].id),
+                              list.removeAt(index),
+                            },
                           ),
                         ],
                       ),
@@ -227,7 +246,7 @@ class _ProductItemCardState extends State<ProductItemCard> {
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Image.network(//product image here
-                  widget.product.images[1].url),
+                  widget.product.images[0].url),
             ),
           ),
         ),

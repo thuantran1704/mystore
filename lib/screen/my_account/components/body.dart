@@ -109,6 +109,7 @@ class _BodyState extends State<Body> {
             "postalCode": postalCode,
           })
         }));
+    print("response.statusCode : " + response.statusCode.toString());
     if (response.statusCode == 200) {
       user = userFromJson(response.body);
       Navigator.pushReplacement(context,

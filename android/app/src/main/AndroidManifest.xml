@@ -17,6 +17,11 @@
 			Flutter's first frame.
 			-->
 			<meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/launch_background" />
+			<!--
+			Disable Automatically Logged Events
+			To disable automatically logged events add the following to your AndroidManifest.xml file:
+			-->
+			
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
