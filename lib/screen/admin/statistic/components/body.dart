@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:mystore/constants.dart';
@@ -84,11 +85,19 @@ class _BodyState extends State<Body> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    // getStatisticData(getText(DateTime.now()), getText(DateTime.now()));
+  void _showToast(String msg) {
+    Fluttertoast.showToast(
+        msg: msg,
+        fontSize: 15,
+        gravity: ToastGravity.BOTTOM,
+        toastLength: Toast.LENGTH_LONG,
+        timeInSecForIosWeb: 1);
   }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // getStatisticData(getText(DateTime.now()), getText(DateTime.now()));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +203,13 @@ class _BodyState extends State<Body> {
                           backgroundColor: backgroudColor,
                         ),
                         onPressed: () {
-                          getStatisticData(getText(dateFrom), getText(dateTo));
+                          if (dateFrom.isAfter(dateTo)) {
+                            _showToast(
+                                "Date To must be equal or greater than Date From !");
+                          } else {
+                            getStatisticData(
+                                getText(dateFrom), getText(dateTo));
+                          }
                         },
                         child: Text(
                           "Statistic",
@@ -207,19 +222,36 @@ class _BodyState extends State<Body> {
                     ),
                   ),
                   SizedBox(
-                    height: 600,
+                    height: getProportionateScreenHeight(16),
+                  ),
+                  (list.isNotEmpty)
+                      ? (list.length < 5)
+                          ? Text(
+                              "Top ${list.length} selling products",
+                              style: TextStyle(
+                                fontSize: getProportionateScreenWidth(20),
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            )
+                          : Text(
+                              "Top 5 selling products",
+                              style: TextStyle(
+                                fontSize: getProportionateScreenWidth(20),
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            )
+                      : SizedBox(
+                          height: getProportionateScreenHeight(0),
+                        ),
+                  SizedBox(
+                    height: 500,
                     child: Card(
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: Column(
                           children: [
-                            // const Text(
-                            //     "Statistic Order from {widget.from} to {widget.to}",
-                            //     style: TextStyle(
-                            //       fontSize: 20,
-                            //       color: Colors.red,
-                            //       fontWeight: FontWeight.bold,
-                            //     )),
                             Expanded(
                                 child: charts.BarChart(
                               series,
@@ -231,9 +263,104 @@ class _BodyState extends State<Body> {
                     ),
                   ),
                   SizedBox(height: getProportionateScreenHeight(20)),
+                  (list.isNotEmpty)
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                              left: getProportionateScreenWidth(8),
+                              right: getProportionateScreenWidth(8)),
+                          child: Table(
+                            border: TableBorder.all(),
+                            columnWidths: const <int, TableColumnWidth>{
+                              0: FixedColumnWidth(295),
+                              1: FixedColumnWidth(80),
+                              // 2: FlexColumnWidth(20),
+                            },
+                            defaultVerticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            children: [
+                              TableRow(
+                                children: [
+                                  Container(
+                                    height: 35,
+                                    color: Colors.grey.shade800,
+                                    child: Center(
+                                      child: Text("Product Name",
+                                          style: TextStyle(
+                                            fontSize:
+                                                getProportionateScreenWidth(16),
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                          )),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 35,
+                                    color: Colors.grey.shade800,
+                                    child: Center(
+                                      child: Text("Sold",
+                                          style: TextStyle(
+                                            fontSize:
+                                                getProportionateScreenWidth(16),
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                          )),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              ...List.generate(
+                                list.length,
+                                (index) => customRow(
+                                    list[index].name, list[index].sold),
+                              ),
+                            ],
+                          ),
+                        )
+                      : SizedBox(
+                          height: getProportionateScreenHeight(0),
+                        ),
+                  SizedBox(height: getProportionateScreenHeight(20)),
                 ],
               ),
             ),
+    );
+  }
+
+  TableRow customRow(String name, int sold) {
+    return TableRow(
+      decoration: const BoxDecoration(
+        color: Colors.white10,
+      ),
+      children: [
+        Center(
+          child: SizedBox(
+              height: getProportionateScreenHeight(60),
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: getProportionateScreenWidth(5),
+                    right: getProportionateScreenWidth(5),
+                    top: getProportionateScreenHeight(4)),
+                child: Text(name,
+                    maxLines: 2,
+                    style: TextStyle(
+                      fontSize: getProportionateScreenWidth(15),
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w400,
+                    )),
+              )),
+        ),
+        Center(
+          child: SizedBox(
+            height: 30,
+            child: Text(sold.toString(),
+                style: TextStyle(
+                  fontSize: getProportionateScreenWidth(16),
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600,
+                )),
+          ),
+        ),
+      ],
     );
   }
 }

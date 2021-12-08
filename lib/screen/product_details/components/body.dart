@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mystore/components/default_button.dart';
 import 'package:mystore/components/rounded_icon_btn.dart';
@@ -34,6 +35,7 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  int num = 1;
   int qty = 1;
   TextEditingController qtyController = TextEditingController();
   void _showToast(String msg) {
@@ -46,6 +48,7 @@ class _BodyState extends State<Body> {
   }
 
   List<Product> list = [];
+  List<Review> listReview = [];
   var loading = false;
   final baseUrl = "https://mystore-backend.herokuapp.com";
 
@@ -85,6 +88,7 @@ class _BodyState extends State<Body> {
   @override
   void initState() {
     getSameProducts(widget.product.brand.name);
+    listReview = widget.product.reviews;
     qtyController.text = qty.toString();
     super.initState();
   }
@@ -149,7 +153,6 @@ class _BodyState extends State<Body> {
                                     ),
                                     SizedBox(
                                         width: getProportionateScreenWidth(5)),
-
                                     SizedBox(
                                       width: getProportionateScreenWidth(40),
                                       height: getProportionateScreenWidth(33),
@@ -165,7 +168,7 @@ class _BodyState extends State<Body> {
                                               borderSide: BorderSide(
                                                   color:
                                                       Colors.green.shade900)),
-                                          enabledBorder: InputBorder.none,
+                                          // enabledBorder: InputBorder.none,
                                           contentPadding: const EdgeInsets.only(
                                               left: 14, bottom: 14),
                                         ),
@@ -187,15 +190,6 @@ class _BodyState extends State<Body> {
                                         },
                                       ),
                                     ),
-
-                                    // Text(
-                                    //   qty.toString(),
-                                    //   style: const TextStyle(
-                                    //     fontSize: 16,
-                                    //     color: Colors.black,
-                                    //     fontWeight: FontWeight.w600,
-                                    //   ),
-                                    // ),
                                     SizedBox(
                                         width: getProportionateScreenWidth(5)),
                                     RoundedIconBtn(
@@ -220,15 +214,14 @@ class _BodyState extends State<Body> {
                       ),
                       TopRoudedContainer(
                         color: Colors.grey.shade200,
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            left: getProportionateScreenHeight(10),
-                            right: getProportionateScreenHeight(10),
-                            bottom: getProportionateScreenWidth(10),
-                          ),
-                          child: Column(
-                            children: [
-                              DefaultButton(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: getProportionateScreenHeight(10),
+                                right: getProportionateScreenHeight(10),
+                              ),
+                              child: DefaultButton(
                                 text: "Add to Cart",
                                 press: () {
                                   if (widget.product.countInStock == 0) {
@@ -239,68 +232,122 @@ class _BodyState extends State<Body> {
                                   }
                                 },
                               ),
-                              TopRoudedContainer(
-                                  color: Colors.white,
-                                  child: Column(
+                            ),
+                            TopRoudedContainer(
+                              color: Colors.white,
+                              child: Column(
+                                children: [
+                                  Column(
                                     children: [
-                                      Container(
-                                        child: loading
-                                            ? Padding(
-                                                padding: EdgeInsets.only(
-                                                    top:
-                                                        getProportionateScreenHeight(
-                                                            20)),
-                                                child: const Center(
-                                                    child:
-                                                        CircularProgressIndicator()),
-                                              )
-                                            : Column(
+                                      (listReview.isNotEmpty)
+                                          ? SectionTitle(
+                                              text: "Reviews",
+                                              press: () {
+                                                if (listReview.length > 5) {
+                                                  setState(() {
+                                                    num = 5;
+                                                  });
+                                                } else {
+                                                  setState(() {
+                                                    num = listReview.length;
+                                                  });
+                                                }
+                                              },
+                                            )
+                                          : SizedBox(
+                                              height:
+                                                  getProportionateScreenHeight(
+                                                      0)),
+                                      (listReview.isNotEmpty)
+                                          ? SizedBox(
+                                              height:
+                                                  getProportionateScreenHeight(
+                                                      5))
+                                          : SizedBox(
+                                              height:
+                                                  getProportionateScreenHeight(
+                                                      0)),
+                                      (listReview.isNotEmpty)
+                                          ? SingleChildScrollView(
+                                              child: Column(
                                                 children: [
-                                                  SectionTitle(
-                                                    text: "You may also love",
-                                                    press: () {},
+                                                  ...List.generate(
+                                                    num,
+                                                    (index) => ReviewCard(
+                                                      review: listReview[index],
+                                                    ),
                                                   ),
                                                   SizedBox(
-                                                      height:
-                                                          getProportionateScreenHeight(
-                                                              5)),
-                                                  SingleChildScrollView(
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    child: Row(
-                                                      children: [
-                                                        ...List.generate(
-                                                          list.length,
-                                                          (index) =>
-                                                              ProductCard(
-                                                            product:
-                                                                list[index],
-                                                            press: () => Navigator.pushNamed(
-                                                                context,
-                                                                DetailsScreen
-                                                                    .routeName,
-                                                                arguments: ProductDetailsArguments(
+                                                      width:
+                                                          getProportionateScreenWidth(
+                                                              5))
+                                                ],
+                                              ),
+                                            )
+                                          : SizedBox(
+                                              height:
+                                                  getProportionateScreenHeight(
+                                                      0)),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Container(
+                                    child: loading
+                                        ? Padding(
+                                            padding: EdgeInsets.only(
+                                                top:
+                                                    getProportionateScreenHeight(
+                                                        20)),
+                                            child: const Center(
+                                                child:
+                                                    CircularProgressIndicator()),
+                                          )
+                                        : Column(
+                                            children: [
+                                              SectionTitle(
+                                                text: "You may also love",
+                                                press: () {},
+                                              ),
+                                              SizedBox(
+                                                  height:
+                                                      getProportionateScreenHeight(
+                                                          5)),
+                                              SingleChildScrollView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                child: Row(
+                                                  children: [
+                                                    ...List.generate(
+                                                      list.length,
+                                                      (index) => ProductCard(
+                                                        product: list[index],
+                                                        press: () => Navigator.pushNamed(
+                                                            context,
+                                                            DetailsScreen
+                                                                .routeName,
+                                                            arguments:
+                                                                ProductDetailsArguments(
                                                                     product: list[
                                                                         index],
                                                                     user: widget
                                                                         .user)),
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                            width:
-                                                                getProportionateScreenWidth(
-                                                                    20))
-                                                      ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                    SizedBox(
+                                                        width:
+                                                            getProportionateScreenWidth(
+                                                                20))
+                                                  ],
+                                                ),
                                               ),
-                                      ),
-                                      const SizedBox(height: 20)
-                                    ],
-                                  ))
-                            ],
-                          ),
+                                            ],
+                                          ),
+                                  ),
+                                  const SizedBox(height: 20)
+                                ],
+                              ),
+                            )
+                          ],
                         ),
                       ),
                     ],
@@ -310,6 +357,87 @@ class _BodyState extends State<Body> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ReviewCard extends StatelessWidget {
+  const ReviewCard({
+    Key? key,
+    required this.review,
+  }) : super(key: key);
+
+  final Review review;
+
+  @override
+  Widget build(BuildContext context) {
+    IconData? _selectedIcon;
+    return Padding(
+      padding: EdgeInsets.only(
+          right: getProportionateScreenWidth(8),
+          top: getProportionateScreenHeight(5)),
+      child: Container(
+        width: SizeConfig.screenWidth * 0.92,
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: const BorderRadius.all(
+            Radius.circular(20),
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.only(
+              left: getProportionateScreenWidth(22),
+              top: getProportionateScreenHeight(8),
+              bottom: getProportionateScreenHeight(8)),
+          child: Row(
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    review.name,
+                    style: TextStyle(
+                      fontSize: getProportionateScreenHeight(15),
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black,
+                    ),
+                  ),
+                  RatingBar.builder(
+                    ignoreGestures: true,
+                    initialRating: review.rating.toDouble(),
+                    direction: Axis.horizontal,
+                    allowHalfRating: false,
+                    unratedColor: Colors.amber.withAlpha(70),
+                    itemCount: 5,
+                    itemSize: 18.0,
+                    itemPadding: const EdgeInsets.symmetric(horizontal: 0.8),
+                    itemBuilder: (context, _) => Icon(
+                      _selectedIcon ?? Icons.star,
+                      color: Colors.amber.shade700,
+                    ),
+                    onRatingUpdate: (rating) {},
+                  ),
+                  SizedBox(
+                    height: getProportionateScreenHeight(4),
+                  ),
+                  SizedBox(
+                    width: SizeConfig.screenWidth * 0.82,
+                    child: Text(
+                      review.comment,
+                      style: TextStyle(
+                        fontSize: getProportionateScreenHeight(15),
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
