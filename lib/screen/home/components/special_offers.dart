@@ -33,7 +33,8 @@ class SpecialOffers extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) => AllProductScreen(
                                 user: user,
-                                cate: "Keyboard",
+                                cate: "6157e6270cb574369883ccc7",
+                                cateName: "Keyboard",
                               )));
                 },
               ),
@@ -47,7 +48,8 @@ class SpecialOffers extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) => AllProductScreen(
                                 user: user,
-                                cate: "Mouse",
+                                cate: "617bd495aa9200000487a051",
+                                cateName: "Mouse",
                               )));
                 },
               ),
@@ -61,7 +63,8 @@ class SpecialOffers extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) => AllProductScreen(
                                 user: user,
-                                cate: "Headphone",
+                                cate: "617bb9afa009443018c40782",
+                                cateName: "Headphone",
                               )));
                 },
               ),
@@ -75,7 +78,8 @@ class SpecialOffers extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) => AllProductScreen(
                                 user: user,
-                                cate: "RTX",
+                                cate: "617d0ba223b7820004f44c5f",
+                                cateName: "RTX",
                               )));
                 },
               ),

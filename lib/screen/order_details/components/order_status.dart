@@ -15,7 +15,7 @@ class OrderStatusRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: SizeConfig.screenHeight * 0.14,
-      child: (order.status == 1)
+      child: (order.status.toLowerCase() == "wait")
           ? (order.paymentMethod == "ShipCOD")
               ? firtsRowOrderDetais(
                   status: "Waitting for Confirm",
@@ -31,7 +31,7 @@ class OrderStatusRow extends StatelessWidget {
                   image: "assets/images/waiting.jpg",
                   color: Colors.blueAccent,
                 )
-          : (order.status == 2)
+          : (order.status.toLowerCase() == "paid")
               ? firtsRowOrderDetais(
                   status: "Waitting for Confirm",
                   createdAt: order.createdAt.toString(),
@@ -39,7 +39,7 @@ class OrderStatusRow extends StatelessWidget {
                   image: "assets/images/waiting.jpg",
                   color: Colors.blueAccent,
                 )
-              : (order.status == 3)
+              : (order.status.toLowerCase() == "delivered")
                   ? firtsRowOrderDetais(
                       status: "On delivery",
                       createdAt: order.createdAt.toString(),
@@ -47,7 +47,7 @@ class OrderStatusRow extends StatelessWidget {
                       image: "assets/images/delivery.jpg",
                       color: kPrimaryColor,
                     )
-                  : (order.status == 4)
+                  : (order.status.toLowerCase() == "received")
                       ? firtsRowOrderDetais(
                           status: "Completed",
                           createdAt: order.createdAt.toString(),

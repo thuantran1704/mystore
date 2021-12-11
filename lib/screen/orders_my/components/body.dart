@@ -134,42 +134,49 @@ class _BodyState extends State<Body> {
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),
-                                              (list[index].status == 1)
-                                                  ? const StatusMyOrdersCard(
-                                                      status:
-                                                          "Waitting for Payment",
-                                                      color: Colors.blueAccent)
-                                                  : (list[index].status == 2)
+                                              (list[index]
+                                                          .status
+                                                          .toLowerCase() ==
+                                                      "wait")
+                                                  ? (list[index]
+                                                              .paymentMethod
+                                                              .toLowerCase() ==
+                                                          "paypal")
                                                       ? const StatusMyOrdersCard(
+                                                          status:
+                                                              "Waitting for Payment",
+                                                          color:
+                                                              Colors.blueAccent)
+                                                      : const StatusMyOrdersCard(
                                                           status:
                                                               "Waitting for Confirm",
                                                           color:
                                                               Colors.blueAccent,
                                                         )
-                                                      : (list[index].status ==
-                                                              3)
+                                                  : (list[index]
+                                                              .status
+                                                              .toLowerCase() ==
+                                                          "delivered")
+                                                      ? const StatusMyOrdersCard(
+                                                          status: "On delivery",
+                                                          color: kPrimaryColor,
+                                                        )
+                                                      : (list[index]
+                                                                  .status
+                                                                  .toLowerCase() ==
+                                                              "received")
                                                           ? const StatusMyOrdersCard(
                                                               status:
-                                                                  "On delivery",
+                                                                  "Completed",
                                                               color:
-                                                                  kPrimaryColor,
+                                                                  Colors.green,
                                                             )
-                                                          : (list[index]
-                                                                      .status ==
-                                                                  4)
-                                                              ? const StatusMyOrdersCard(
-                                                                  status:
-                                                                      "Completed",
-                                                                  color: Colors
-                                                                      .green,
-                                                                )
-                                                              : StatusMyOrdersCard(
-                                                                  status:
-                                                                      "Cancelled",
-                                                                  color: Colors
-                                                                      .red
-                                                                      .shade900,
-                                                                )
+                                                          : StatusMyOrdersCard(
+                                                              status:
+                                                                  "Cancelled",
+                                                              color: Colors
+                                                                  .red.shade900,
+                                                            )
                                             ],
                                           ),
                                         ),

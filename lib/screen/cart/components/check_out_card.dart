@@ -40,7 +40,7 @@ class _CheckoutCardState extends State<CheckoutCard> {
       setState(() {
         list = parseCart(response.body);
         for (int i = 0; i < list.length; i++) {
-          total = total + (list[i].price * list[i].qty);
+          total = total + (list[i].product.price * list[i].qty);
         }
         loading = false;
       });

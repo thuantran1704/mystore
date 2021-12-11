@@ -21,7 +21,7 @@ class OrderItemCard extends StatefulWidget {
   }) : super(key: key);
 
   final OrderItem item;
-  final int status;
+  final String status;
   final User user;
   @override
   State<OrderItemCard> createState() => _OrderItemCardState();
@@ -84,7 +84,7 @@ class _OrderItemCardState extends State<OrderItemCard> {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Image.network(//product image here
-                    widget.item.image),
+                    widget.item.product.images[0].url),
               ),
             ),
           ),
@@ -95,7 +95,7 @@ class _OrderItemCardState extends State<OrderItemCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.item.name, // product name here
+                widget.item.product.name, // product name here
                 style: const TextStyle(fontSize: 15, color: Colors.black),
                 maxLines: 2,
               ),
@@ -200,7 +200,8 @@ class _OrderItemCardState extends State<OrderItemCard> {
                                                         ),
                                                         child: Image.network(
                                                             //product image here
-                                                            widget.item.image),
+                                                            widget.item.product
+                                                                .images[0].url),
                                                       ),
                                                     ),
                                                     SizedBox(
@@ -215,7 +216,7 @@ class _OrderItemCardState extends State<OrderItemCard> {
                                                           getProportionateScreenHeight(
                                                               50),
                                                       child: Text(
-                                                        widget.item
+                                                        widget.item.product
                                                             .name, // product name here
                                                         style: const TextStyle(
                                                             fontSize: 15,

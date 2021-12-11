@@ -10,11 +10,31 @@ class Brands extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> brands = [
-      {"icon": "assets/icons/Asus.svg", "text": "ASUS"},
-      {"icon": "assets/icons/Iogear.svg", "text": "Iogear"},
-      {"icon": "assets/icons/Acer.svg", "text": "Acer"},
-      {"icon": "assets/icons/Cougar.svg", "text": "Cougar"},
-      {"icon": "assets/icons/Msi.svg", "text": "MSI"},
+      {
+        "icon": "assets/icons/Asus.svg",
+        "text": "ASUS",
+        "id": "61582628895be80e680e8cc8"
+      },
+      {
+        "icon": "assets/icons/Iogear.svg",
+        "text": "Iogear",
+        "id": "617d0a7f23b7820004f44c59"
+      },
+      {
+        "icon": "assets/icons/Acer.svg",
+        "text": "Acer",
+        "id": "617d0a8a23b7820004f44c5c"
+      },
+      {
+        "icon": "assets/icons/Cougar.svg",
+        "text": "Cougar",
+        "id": "617bb9f0a009443018c40785"
+      },
+      {
+        "icon": "assets/icons/Msi.svg",
+        "text": "MSI",
+        "id": "6157e6590cb574369883ccca"
+      },
     ];
     return Padding(
       padding:
@@ -34,7 +54,8 @@ class Brands extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => AllProductScreen(
                                     user: user,
-                                    brand: brands[index]["text"],
+                                    brand: brands[index]["id"],
+                                    brandName: brands[index]["text"],
                                   )));
                     },
                   ))

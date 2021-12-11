@@ -87,7 +87,7 @@ class _BodyState extends State<Body> {
 
   @override
   void initState() {
-    getSameProducts(widget.product.brand.name);
+    getSameProducts(widget.product.brand.id);
     listReview = widget.product.reviews;
     qtyController.text = qty.toString();
     super.initState();
@@ -397,7 +397,7 @@ class ReviewCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    review.name,
+                    review.user.name,
                     style: TextStyle(
                       fontSize: getProportionateScreenHeight(15),
                       fontWeight: FontWeight.w400,

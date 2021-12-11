@@ -134,8 +134,8 @@ class _BodyState extends State<Body> {
         nameController.text = widget.product.name;
         descriptionController.text = widget.product.description;
         priceController.text = widget.product.price.toString();
-        dropdownBrandValue = widget.product.brand.brand;
-        dropdownCateValue = widget.product.category.category;
+        dropdownBrandValue = widget.product.brand.id;
+        dropdownCateValue = widget.product.category.id;
 
         for (int i = 0; i < widget.product.images.length; i++) {
           final item = UploadImage.fromJson(widget.product.images[i].toJson());

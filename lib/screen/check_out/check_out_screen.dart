@@ -10,6 +10,7 @@ import 'package:mystore/components/default_button.dart';
 import 'package:mystore/components/form_error.dart';
 import 'package:mystore/constants.dart';
 import 'package:mystore/helper/keyboard.dart';
+import 'package:mystore/models/order.dart';
 import 'package:mystore/models/user.dart';
 import 'package:mystore/screen/check_out/components/custom_title.dart';
 import 'package:mystore/screen/check_out/components/order_item_card.dart';
@@ -61,7 +62,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   static const baseUrl = "https://mystore-backend.herokuapp.com";
 
   Future<void> createOrder(
-      List orderItems,
+      List<Cart> orderItems,
       String? address,
       String? city,
       String? postalCode,
@@ -73,15 +74,21 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       double discountPrice,
       double? totalPrice) async {
     List jsonList = [];
-    orderItems.map((item) => jsonList.add(item.toJson())).toList();
-
+    for (int i = 0; i < orderItems.length; i++) {
+      CartItem item = CartItem(
+          qty: orderItems[i].qty,
+          price: orderItems[i].importPrice,
+          product: orderItems[i].product.id);
+      jsonList.add(item.toJson());
+    }
+    print("jsonList : " + jsonList[0].toString());
     var response = await http.post(Uri.parse("$baseUrl/api/orders"),
         headers: <String, String>{
           'Authorization': 'Bearer ${widget.user.token}',
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode({
-          "orderItems": jsonList,
+          "orderItems": jsonList.toList(),
           "shippingAddress": ({
             "address": address,
             "city": city,
@@ -803,9 +810,9 @@ class VoucherItemCard extends StatelessWidget {
                   ),
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: (voucher.discount == 10)
+                child: (voucher.discount == "10")
                     ? Image.asset("assets/images/discount10.jpg")
-                    : (voucher.discount == 15)
+                    : (voucher.discount == "15")
                         ? Image.asset("assets/images/discount15.jpg")
                         : Image.asset("assets/images/discount20.jpg"),
               ),
@@ -828,8 +835,7 @@ class VoucherItemCard extends StatelessWidget {
               const SizedBox(height: 4),
               Text.rich(
                 TextSpan(
-                  text:
-                      "Discount ${voucher.discount.toString()}% \non total items price",
+                  text: "Discount ${voucher.discount}% \non total items price",
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
               ),
@@ -855,7 +861,7 @@ class VoucherItemCard extends StatelessWidget {
                       TextStyle(fontSize: 16, backgroundColor: kPrimaryColor),
                 ),
                 onPressed: () {
-                  Navigator.pop(context, voucher.discount.toString());
+                  Navigator.pop(context, voucher.discount);
                 }),
           ),
         )

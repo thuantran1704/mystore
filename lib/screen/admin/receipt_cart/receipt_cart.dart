@@ -45,7 +45,7 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
   void calSum(List<Cart> list) {
     total = 0;
     for (int i = 0; i < list.length; i++) {
-      total = total + (list[i].price * list[i].qty);
+      total = total + (list[i].product.price * list[i].qty);
     }
   }
 
@@ -95,13 +95,13 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
           TextEditingController priceController = TextEditingController();
           TextEditingController qtyController = TextEditingController();
 
-          priceController.text = list[i].price.toString();
+          priceController.text = list[i].product.price.toString();
           qtyController.text = list[i].qty.toString();
 
           myPriceController.add(priceController);
           myQtyController.add(qtyController);
 
-          total = total + (list[i].price * list[i].qty);
+          total = total + (list[i].product.price * list[i].qty);
         }
 
         loading = false;
@@ -260,7 +260,7 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
                                       borderRadius: BorderRadius.circular(6),
                                     ),
                                     child: Image.network(//product image here
-                                        list[index].image),
+                                        list[index].product.images[0].url),
                                   ),
                                 ),
                               ),
@@ -270,7 +270,7 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      list[index].name,
+                                      list[index].product.name,
                                       style: const TextStyle(
                                           fontSize: 16, color: Colors.black),
                                       maxLines: 2,
@@ -335,7 +335,9 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
                                                     setState(() {
                                                       myPriceController[index]
                                                           .text = value;
-                                                      list[index].price =
+                                                      list[index]
+                                                              .product
+                                                              .price =
                                                           double.parse(
                                                               myPriceController[
                                                                       index]
@@ -346,7 +348,9 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
                                                     setState(() {
                                                       myPriceController[index]
                                                           .text = "1";
-                                                      list[index].price =
+                                                      list[index]
+                                                              .product
+                                                              .price =
                                                           double.parse(
                                                               myPriceController[
                                                                       index]
@@ -358,9 +362,11 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
                                                 },
                                                 onFieldSubmitted: (text) {
                                                   updateCartItem(
-                                                      list[index].product,
+                                                      list[index].product.id,
                                                       0,
-                                                      list[index].price);
+                                                      list[index]
+                                                          .product
+                                                          .price);
                                                 },
                                                 validator: (value) {
                                                   if (value!.isEmpty) {
@@ -370,7 +376,9 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
                                                     return "Required";
                                                   } else if (double.parse(
                                                           value) <=
-                                                      list[index].price) {
+                                                      list[index]
+                                                          .product
+                                                          .price) {
                                                     addError(
                                                         error:
                                                             kProductSalePriceError);

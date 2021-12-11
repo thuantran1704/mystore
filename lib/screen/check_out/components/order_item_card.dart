@@ -32,7 +32,7 @@ class OrderItemCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Image.network(//product image here
-                    cart.image),
+                    cart.product.images[0].url),
               ),
             ),
           ),
@@ -43,14 +43,14 @@ class OrderItemCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                cart.name, // product name here
+                cart.product.name, // product name here
                 style: const TextStyle(fontSize: 14, color: Colors.black),
                 maxLines: 2,
               ),
               const SizedBox(height: 8),
               Text.rich(
                 TextSpan(
-                  text: "\$${cart.price.toString()}",
+                  text: "\$${cart.product.price.toString()}",
                   style: const TextStyle(fontWeight: FontWeight.w600),
                   children: [
                     TextSpan(

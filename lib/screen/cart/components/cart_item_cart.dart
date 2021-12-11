@@ -34,7 +34,7 @@ class _CartItemCardState extends State<CartItemCard> {
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Image.network(//product image here
-                  widget.cart.image),
+                  widget.cart.product.images[0].url),
             ),
           ),
         ),
@@ -44,7 +44,7 @@ class _CartItemCardState extends State<CartItemCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.cart.name, // product name here
+                widget.cart.product.name, // product name here
                 style: const TextStyle(fontSize: 16, color: Colors.black),
                 maxLines: 2,
               ),
@@ -54,7 +54,7 @@ class _CartItemCardState extends State<CartItemCard> {
                 children: [
                   Text.rich(
                     TextSpan(
-                      text: "\$${widget.cart.price.toString()}",
+                      text: "\$${widget.cart.product.price.toString()}",
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ),

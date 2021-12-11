@@ -246,7 +246,7 @@ class _BodyState extends State<Body> {
                           height: getProportionateScreenHeight(0),
                         ),
                   SizedBox(
-                    height: 500,
+                    height: 420,
                     child: Card(
                       child: Padding(
                         padding: const EdgeInsets.all(10),

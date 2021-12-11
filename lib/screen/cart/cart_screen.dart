@@ -33,7 +33,7 @@ class _CartScreenState extends State<CartScreen> {
   void calSum(List<Cart> list) {
     total = 0;
     for (int i = 0; i < list.length; i++) {
-      total = total + (list[i].price * list[i].qty);
+      total = total + (list[i].product.price * list[i].qty);
     }
   }
 
@@ -158,7 +158,7 @@ class _CartScreenState extends State<CartScreen> {
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Image.network(//product image here
-                                      list[index].image),
+                                      list[index].product.images[0].url),
                                 ),
                               ),
                             ),
@@ -168,7 +168,9 @@ class _CartScreenState extends State<CartScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    list[index].name, // product name here
+                                    list[index]
+                                        .product
+                                        .name, // product name here
                                     style: const TextStyle(
                                         fontSize: 16, color: Colors.black),
                                     maxLines: 2,
@@ -181,7 +183,7 @@ class _CartScreenState extends State<CartScreen> {
                                       Text.rich(
                                         TextSpan(
                                           text:
-                                              "\$${list[index].price.toString()}",
+                                              "\$${list[index].product.price.toString()}",
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w600),
                                         ),

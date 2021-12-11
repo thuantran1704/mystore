@@ -18,9 +18,13 @@ class AllProductScreen extends StatefulWidget {
     this.brand,
     this.cate,
     this.keyword,
+    this.brandName,
+    this.cateName,
   }) : super(key: key);
   final String? brand;
+  final String? brandName;
   final String? cate;
+  final String? cateName;
   final String? keyword;
   final User user;
 
@@ -177,14 +181,14 @@ class _AllProductScreenState extends State<AllProductScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: (widget.brand != null)
+        title: (widget.brandName != null)
             ? Text(
-                "${widget.brand} Products",
+                "${widget.brandName} Products",
                 style: TextStyle(color: Colors.black),
               )
-            : (widget.cate != null)
+            : (widget.cateName != null)
                 ? Text(
-                    "${widget.cate} Products",
+                    "${widget.cateName} Products",
                     style: TextStyle(color: Colors.black),
                   )
                 : (widget.keyword != null)
