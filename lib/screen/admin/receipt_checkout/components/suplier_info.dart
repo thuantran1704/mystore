@@ -11,7 +11,7 @@ class CustomSuplierInfo extends StatelessWidget {
     required this.suplier,
   }) : super(key: key);
 
-  final SuplierInfo suplier;
+  final SupplierReceipt suplier;
 
   @override
   Widget build(BuildContext context) {

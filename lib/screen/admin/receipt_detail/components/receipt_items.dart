@@ -61,7 +61,7 @@ class ReceiptItemCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Image.network(//product image here
-                    item.image),
+                    item.product.images[0].url),
               ),
             ),
           ),
@@ -72,7 +72,7 @@ class ReceiptItemCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                item.name, // product name here
+                item.product.name, // product name here
                 style: const TextStyle(fontSize: 14, color: Colors.black),
                 maxLines: 2,
               ),

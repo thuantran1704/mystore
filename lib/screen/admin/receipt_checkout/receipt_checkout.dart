@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mystore/components/default_button.dart';
 import 'package:mystore/constants.dart';
+import 'package:mystore/models/order.dart';
 import 'package:mystore/models/reciept.dart';
 import 'package:mystore/models/user.dart';
 import 'package:mystore/screen/admin/receipt_checkout/components/receipt_items.dart';
@@ -25,7 +26,7 @@ class RecieptCheckOutScreen extends StatefulWidget {
   }) : super(key: key);
   final User user;
   final double total;
-  final SuplierInfo suplier;
+  final SupplierReceipt suplier;
   final List<Cart> list;
   @override
   _RecieptCheckOutScreenState createState() => _RecieptCheckOutScreenState();
@@ -36,9 +37,15 @@ class _RecieptCheckOutScreenState extends State<RecieptCheckOutScreen> {
   static const baseUrl = "https://mystore-backend.herokuapp.com";
 
   Future<void> createReceipt(
-      List receiptItems, SuplierInfo suplier, double totalPrice) async {
+      List receiptItems, SupplierReceipt suplier, double totalPrice) async {
     List jsonList = [];
-    receiptItems.map((item) => jsonList.add(item.toJson())).toList();
+    for (int i = 0; i < receiptItems.length; i++) {
+      CartItem item = CartItem(
+          qty: receiptItems[i].qty,
+          price: receiptItems[i].importPrice,
+          product: receiptItems[i].product.id);
+      jsonList.add(item.toJson());
+    }
 
     totalPrice = double.parse(totalPrice.toStringAsFixed(2));
 
@@ -48,14 +55,8 @@ class _RecieptCheckOutScreenState extends State<RecieptCheckOutScreen> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode({
-          "receiptItems": jsonList,
-          "supplier": ({
-            "name": suplier.name,
-            "address": suplier.address,
-            "country": suplier.country,
-            "phone": suplier.phone,
-          }),
-          "itemsPrice": totalPrice,
+          "receiptItems": jsonList.toList(),
+          "supplier": suplier.id,
           "shippingPrice": 0,
           "totalPrice": totalPrice,
         }));

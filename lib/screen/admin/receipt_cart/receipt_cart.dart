@@ -28,7 +28,7 @@ class ReceiptCartScreen extends StatefulWidget {
 
 class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
   List<Cart> list = [];
-  List<SuplierInfo> listSuplier = [];
+  List<SupplierReceipt> listSuplier = [];
   double total = 0;
 
   int index = 0;
@@ -67,7 +67,7 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
 
     if (response.statusCode == 200) {
       setState(() {
-        listSuplier = suplierInfoFromJson(response.body);
+        listSuplier = parseSupplierReceipts(response.body);
         dropdownSuplierValue = listSuplier[0].id;
 
         loading = false;
@@ -580,7 +580,8 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
                                                 dropdownSuplierValue);
                                       });
                                     },
-                                    items: listSuplier.map((SuplierInfo value) {
+                                    items: listSuplier
+                                        .map((SupplierReceipt value) {
                                       return DropdownMenuItem<String>(
                                         value: value.id,
                                         child: Text(value.name),

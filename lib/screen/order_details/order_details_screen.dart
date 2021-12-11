@@ -377,176 +377,92 @@ class _OrderScreenState extends State<OrderScreen> {
                       children: [
                         SizedBox(
                           width: getProportionateScreenWidth(300),
-                          child: (order.status.toLowerCase() == "wait" &&
+                          child: (order.status.toLowerCase() == "pay" &&
                                   widget.user.role.name.toLowerCase() !=
                                       "admin")
-                              ? (order.paymentMethod.toLowerCase() == "paypal")
-                                  ? Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        SizedBox(
-                                          width:
-                                              getProportionateScreenHeight(155),
-                                          height:
-                                              getProportionateScreenHeight(50),
-                                          child: TextButton(
-                                            style: TextButton.styleFrom(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20)),
-                                              primary: Colors.white,
-                                              backgroundColor: kPrimaryColor,
-                                            ),
-                                            onPressed: () async {
-                                              final request =
-                                                  BraintreeDropInRequest(
-                                                tokenizationKey:
-                                                    "sandbox_bnmjvh5d_9qzq2sh2s4ndqyfz",
-                                                collectDeviceData: true,
+                              ? Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      width: getProportionateScreenHeight(155),
+                                      height: getProportionateScreenHeight(50),
+                                      child: TextButton(
+                                        style: TextButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20)),
+                                          primary: Colors.white,
+                                          backgroundColor: kPrimaryColor,
+                                        ),
+                                        onPressed: () async {
+                                          final request =
+                                              BraintreeDropInRequest(
+                                            tokenizationKey:
+                                                "sandbox_bnmjvh5d_9qzq2sh2s4ndqyfz",
+                                            collectDeviceData: true,
 
-                                                // googlePaymentRequest:
-                                                //     BraintreeGooglePaymentRequest(
-                                                //   totalPrice:
-                                                //       order.totalPrice.toStringAsFixed(2),
-                                                //   currencyCode: 'USD',
-                                                //   billingAddressRequired: false,
-                                                // ),
-                                                paypalRequest:
-                                                    BraintreePayPalRequest(
-                                                  amount: "${order.totalPrice}",
-                                                  displayName: order.user.name,
-                                                ),
-                                                cardEnabled: true,
-                                              );
-                                              BraintreeDropInResult? result =
-                                                  await BraintreeDropIn.start(
-                                                      request);
-                                              if (result != null) {
-                                                print(result.paymentMethodNonce
-                                                    .description);
-                                                print(result
-                                                    .paymentMethodNonce.nonce);
-                                                markAsPaid();
-                                              } else {
-                                                print(
-                                                    'Selection was canceled.');
-                                              }
-                                            },
-                                            child: Text(
-                                              "Pay now",
-                                              style: TextStyle(
-                                                fontSize:
-                                                    getProportionateScreenWidth(
-                                                        18),
-                                                color: Colors.white,
-                                              ),
+                                            // googlePaymentRequest:
+                                            //     BraintreeGooglePaymentRequest(
+                                            //   totalPrice:
+                                            //       order.totalPrice.toStringAsFixed(2),
+                                            //   currencyCode: 'USD',
+                                            //   billingAddressRequired: false,
+                                            // ),
+                                            paypalRequest:
+                                                BraintreePayPalRequest(
+                                              amount: "${order.totalPrice}",
+                                              displayName: order.user.name,
                                             ),
+                                            cardEnabled: true,
+                                          );
+                                          BraintreeDropInResult? result =
+                                              await BraintreeDropIn.start(
+                                                  request);
+                                          if (result != null) {
+                                            print(result.paymentMethodNonce
+                                                .description);
+                                            print(result
+                                                .paymentMethodNonce.nonce);
+                                            markAsPaid();
+                                          } else {
+                                            print('Selection was canceled.');
+                                          }
+                                        },
+                                        child: Text(
+                                          "Pay now",
+                                          style: TextStyle(
+                                            fontSize:
+                                                getProportionateScreenWidth(18),
+                                            color: Colors.white,
                                           ),
                                         ),
-                                        const SizedBox(
-                                          width: 2,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 2,
+                                    ),
+                                    SizedBox(
+                                      width: getProportionateScreenHeight(155),
+                                      height: getProportionateScreenHeight(50),
+                                      child: TextButton(
+                                        style: TextButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20)),
+                                          primary: Colors.white,
+                                          backgroundColor: kPrimaryColor,
                                         ),
-                                        SizedBox(
-                                          width:
-                                              getProportionateScreenHeight(155),
-                                          height:
-                                              getProportionateScreenHeight(50),
-                                          child: TextButton(
-                                            style: TextButton.styleFrom(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20)),
-                                              primary: Colors.white,
-                                              backgroundColor: kPrimaryColor,
-                                            ),
-                                            onPressed: () {
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (BuildContext
-                                                          context) =>
-                                                      AlertDialog(
-                                                        title: const Text(
-                                                            "Confirm"),
-                                                        content: const Text(
-                                                            "Are you sure to cancel this order?"),
-                                                        actions: <Widget>[
-                                                          TextButton(
-                                                            onPressed: () =>
-                                                                Navigator.pop(
-                                                                    context,
-                                                                    'No'),
-                                                            child: const Text(
-                                                                'No'),
-                                                          ),
-                                                          TextButton(
-                                                              child: const Text(
-                                                                  'Yes'),
-                                                              onPressed: () => {
-                                                                    Navigator.pop(
-                                                                        context,
-                                                                        'Yes'),
-                                                                    cancelOrder(),
-                                                                  }),
-                                                        ],
-                                                      ));
-                                            },
-                                            child: Text(
-                                              "Cancel",
-                                              style: TextStyle(
-                                                fontSize:
-                                                    getProportionateScreenWidth(
-                                                        18),
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  : DefaultButton(
-                                      text: "Cancel",
-                                      press: () => showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) =>
-                                              AlertDialog(
-                                                title: const Text("Confirm"),
-                                                content: const Text(
-                                                    "Are you sure to cancel this order?"),
-                                                actions: <Widget>[
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(
-                                                            context, 'No'),
-                                                    child: const Text('No'),
-                                                  ),
-                                                  TextButton(
-                                                      child: const Text('Yes'),
-                                                      onPressed: () => {
-                                                            Navigator.pop(
-                                                                context, 'Yes'),
-                                                            cancelOrder(),
-                                                          }),
-                                                ],
-                                              )))
-                              : (order.status.toLowerCase() == "wait" &&
-                                      widget.user.role.name.toLowerCase() ==
-                                          "admin")
-                                  ? (order.paymentMethod.toLowerCase() ==
-                                          "shipcod")
-                                      ? DefaultButton(
-                                          text: "Mark as Delivery",
-                                          press: () => showDialog(
+                                        onPressed: () {
+                                          showDialog(
                                               context: context,
                                               builder: (BuildContext context) =>
                                                   AlertDialog(
                                                     title:
                                                         const Text("Confirm"),
                                                     content: const Text(
-                                                        "Are you sure to mark delivery this order?"),
+                                                        "Are you sure to cancel this order?"),
                                                     actions: <Widget>[
                                                       TextButton(
                                                         onPressed: () =>
@@ -561,12 +477,28 @@ class _OrderScreenState extends State<OrderScreen> {
                                                                 Navigator.pop(
                                                                     context,
                                                                     'Yes'),
-                                                                markAsDelivery(),
+                                                                cancelOrder(),
                                                               }),
                                                     ],
-                                                  )))
-                                      : null
-                                  : (order.status.toLowerCase() == "paid" &&
+                                                  ));
+                                        },
+                                        child: Text(
+                                          "Cancel",
+                                          style: TextStyle(
+                                            fontSize:
+                                                getProportionateScreenWidth(18),
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : (order.status.toLowerCase() == "pay" &&
+                                      widget.user.role.name.toLowerCase() ==
+                                          "admin")
+                                  ? null
+                                  : (order.status.toLowerCase() == "wait" &&
                                           widget.user.role.name.toLowerCase() ==
                                               "admin")
                                       ? DefaultButton(
@@ -597,17 +529,52 @@ class _OrderScreenState extends State<OrderScreen> {
                                                               }),
                                                     ],
                                                   )))
-                                      : (order.status.toLowerCase() ==
-                                                  "delivered" &&
+                                      : (order.status.toLowerCase() == "wait" &&
                                               widget.user.role.name
                                                       .toLowerCase() !=
                                                   "admin")
                                           ? DefaultButton(
-                                              text: "Mark as Received",
+                                              text: "Cancel",
                                               press: () => showDialog(
                                                   context: context,
-                                                  builder:
-                                                      (BuildContext context) =>
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      AlertDialog(
+                                                        title: const Text(
+                                                            "Confirm"),
+                                                        content: const Text(
+                                                            "Are you sure to cancel this order?"),
+                                                        actions: <Widget>[
+                                                          TextButton(
+                                                            onPressed: () =>
+                                                                Navigator.pop(
+                                                                    context,
+                                                                    'No'),
+                                                            child: const Text(
+                                                                'No'),
+                                                          ),
+                                                          TextButton(
+                                                              child: const Text(
+                                                                  'Yes'),
+                                                              onPressed: () => {
+                                                                    Navigator.pop(
+                                                                        context,
+                                                                        'Yes'),
+                                                                    cancelOrder(),
+                                                                  }),
+                                                        ],
+                                                      )))
+                                          : (order.status.toLowerCase() ==
+                                                      "delivered" &&
+                                                  widget.user.role.name
+                                                          .toLowerCase() !=
+                                                      "admin")
+                                              ? DefaultButton(
+                                                  text: "Mark as Received",
+                                                  press: () => showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                              context) =>
                                                           AlertDialog(
                                                             title: const Text(
                                                                 "Confirm"),
@@ -634,7 +601,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                                                           }),
                                                             ],
                                                           )))
-                                          : null,
+                                              : null,
                         ),
                       ],
                     ),

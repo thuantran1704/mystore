@@ -16,24 +16,16 @@ class OrderStatusRow extends StatelessWidget {
     return SizedBox(
       height: SizeConfig.screenHeight * 0.14,
       child: (order.status.toLowerCase() == "wait")
-          ? (order.paymentMethod == "ShipCOD")
+          ? firtsRowOrderDetais(
+              status: "Waitting for Confirm",
+              createdAt: order.createdAt.toString(),
+              paymentMethod: order.paymentMethod,
+              image: "assets/images/waiting.jpg",
+              color: Colors.blueAccent,
+            )
+          : (order.status.toLowerCase() == "pay")
               ? firtsRowOrderDetais(
-                  status: "Waitting for Confirm",
-                  createdAt: order.createdAt.toString(),
-                  paymentMethod: order.paymentMethod,
-                  image: "assets/images/waiting.jpg",
-                  color: Colors.blueAccent,
-                )
-              : firtsRowOrderDetais(
                   status: "Waitting for Payment",
-                  createdAt: order.createdAt.toString(),
-                  paymentMethod: order.paymentMethod,
-                  image: "assets/images/waiting.jpg",
-                  color: Colors.blueAccent,
-                )
-          : (order.status.toLowerCase() == "paid")
-              ? firtsRowOrderDetais(
-                  status: "Waitting for Confirm",
                   createdAt: order.createdAt.toString(),
                   paymentMethod: order.paymentMethod,
                   image: "assets/images/waiting.jpg",

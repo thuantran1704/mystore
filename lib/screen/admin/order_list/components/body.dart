@@ -55,10 +55,11 @@ class _BodyState extends State<Body> {
             ? Padding(
                 padding: EdgeInsets.only(top: getProportionateScreenHeight(10)),
                 child: const Center(
-                    child: CircularProgressIndicator(
-                  color: kPrimaryColor,
-                  // backgroundColor: Colors.black,
-                )),
+                  child: CircularProgressIndicator(
+                    color: kPrimaryColor,
+                    // backgroundColor: Colors.black,
+                  ),
+                ),
               )
             : list.isEmpty
                 ? Row(
@@ -144,27 +145,16 @@ class _BodyState extends State<Body> {
                                                                 index]
                                                             .status
                                                             .toLowerCase() ==
-                                                        "wait")
-                                                    ? (list[
-                                                                    index]
-                                                                .paymentMethod
-                                                                .toLowerCase() ==
-                                                            "paypal")
-                                                        ? const StatusMyOrdersCard(
-                                                            status:
-                                                                "Waitting for Payment",
-                                                            color: Colors
-                                                                .blueAccent)
-                                                        : const StatusMyOrdersCard(
-                                                            status:
-                                                                "Waitting for Confirm",
-                                                            color: Colors
-                                                                .blueAccent,
-                                                          )
+                                                        "pay")
+                                                    ? const StatusMyOrdersCard(
+                                                        status:
+                                                            "Waitting for Payment",
+                                                        color:
+                                                            Colors.blueAccent)
                                                     : (list[index]
                                                                 .status
                                                                 .toLowerCase() ==
-                                                            "paid")
+                                                            "wait")
                                                         ? const StatusMyOrdersCard(
                                                             status:
                                                                 "Waitting for Confirm",
@@ -220,13 +210,13 @@ class _BodyState extends State<Body> {
                   ),
       ),
       OrderTabViewByStatus(
-        status: "Wait",
+        status: "Pay",
         title: "Waitting for Payment",
         color: Colors.blueAccent,
         user: widget.user,
       ),
       OrderTabViewByStatus(
-        status: "Paid",
+        status: "Wait",
         title: "Waitting for Confirm",
         color: Colors.blueAccent,
         user: widget.user,

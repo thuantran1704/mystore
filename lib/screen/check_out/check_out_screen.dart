@@ -49,7 +49,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
 
   String? country;
   TextEditingController countryController = TextEditingController();
-  // String? fullAddress;
 
   int paymentMethod = 1;
   double itemsprice = 0;
@@ -81,7 +80,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           product: orderItems[i].product.id);
       jsonList.add(item.toJson());
     }
-    print("jsonList : " + jsonList[0].toString());
+
     var response = await http.post(Uri.parse("$baseUrl/api/orders"),
         headers: <String, String>{
           'Authorization': 'Bearer ${widget.user.token}',
@@ -101,6 +100,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           "shippingPrice": shippingPrice,
           "discountPrice": discountPrice,
           "totalPrice": totalPrice,
+          "status": (paymentMethod == 1) ? "Wait" : "Pay",
         }));
 
     if (response.statusCode == 201) {
@@ -520,18 +520,26 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                         child: Container(
                           height: SizeConfig.screenHeight * 0.5,
                           color: Colors.white,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              ...List.generate(
-                                  widget.user.voucher.length,
-                                  (index) => VoucherItemCard(
-                                      voucher: widget.user.voucher[index])),
-                            ],
-                          ),
+                          child: widget.user.voucher.isEmpty
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Text("Your Voucher list is empty"),
+                                  ],
+                                )
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(
+                                      height: 16,
+                                    ),
+                                    ...List.generate(
+                                        widget.user.voucher.length,
+                                        (index) => VoucherItemCard(
+                                            voucher:
+                                                widget.user.voucher[index])),
+                                  ],
+                                ),
                         ),
                       );
                     },
