@@ -11,6 +11,7 @@ class User {
     required this.email,
     required this.password,
     required this.phone,
+    required this.coin,
     required this.cart,
     required this.voucher,
     required this.isDisable,
@@ -24,6 +25,7 @@ class User {
   String email;
   String password;
   String phone;
+  double coin;
   List<Cart> cart;
   List<Voucher> voucher;
   bool isDisable;
@@ -36,6 +38,7 @@ class User {
         name: json["name"],
         email: json["email"],
         password: json["password"],
+        coin: json["coin"].toDouble(),
         phone: json["phone"],
         cart: List<Cart>.from(json["cart"].map((x) => Cart.fromJson(x))),
         voucher:
@@ -51,6 +54,7 @@ class User {
         "name": name,
         "email": email,
         "password": password,
+        "coin": coin,
         "phone": phone,
         "cart": List<dynamic>.from(cart.map((x) => x.toJson())),
         "voucher": List<dynamic>.from(voucher.map((x) => x.toJson())),

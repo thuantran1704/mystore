@@ -11,6 +11,7 @@ class CreateProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         backgroundColor: backgroudColor,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -22,14 +23,13 @@ class CreateProductScreen extends StatelessWidget {
         leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ProductListScreen(user: user)),
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProductListScreen(user: user)),
                   (Route<dynamic> route) => false,
-            )),
+                )),
       ),
-
-      body: Body(user : user),
+      body: Body(user: user),
     );
   }
 }

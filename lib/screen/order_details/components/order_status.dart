@@ -47,13 +47,29 @@ class OrderStatusRow extends StatelessWidget {
                           image: "assets/images/complete.jpg",
                           color: Colors.green,
                         )
-                      : firtsRowOrderDetais(
-                          status: "Cancelled",
-                          createdAt: order.createdAt.toString(),
-                          paymentMethod: order.paymentMethod,
-                          image: "assets/images/cancle.png",
-                          color: Colors.red.shade900,
-                        ),
+                      : (order.status.toLowerCase() == "return")
+                          ? firtsRowOrderDetais(
+                              status: "Requesting Return",
+                              createdAt: order.createdAt.toString(),
+                              paymentMethod: order.paymentMethod,
+                              image: "assets/images/return.jpg",
+                              color: Colors.deepOrange,
+                            )
+                          : (order.status.toLowerCase() == "returned")
+                              ? firtsRowOrderDetais(
+                                  status: "Returned",
+                                  createdAt: order.createdAt.toString(),
+                                  paymentMethod: order.paymentMethod,
+                                  image: "assets/images/return.jpg",
+                                  color: Colors.deepOrange,
+                                )
+                              : firtsRowOrderDetais(
+                                  status: "Cancelled",
+                                  createdAt: order.createdAt.toString(),
+                                  paymentMethod: order.paymentMethod,
+                                  image: "assets/images/cancle.png",
+                                  color: Colors.red.shade900,
+                                ),
     );
   }
 }

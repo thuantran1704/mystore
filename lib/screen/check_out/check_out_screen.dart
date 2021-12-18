@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -49,7 +50,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
 
   String? country;
   TextEditingController countryController = TextEditingController();
-
+  bool useCoin = false;
+  double coin = 0.0;
   int paymentMethod = 1;
   double itemsprice = 0;
   double taxPrice = 0;
@@ -104,6 +106,9 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         }));
 
     if (response.statusCode == 201) {
+      if (coin > 0) {
+        widget.user.coin -= double.parse(coin.toStringAsFixed(2));
+      }
       if (discountPercen != "0") {
         removeVoucher(widget.user.token, discountPercen);
         Timer(Duration(seconds: 3), () {
@@ -131,14 +136,39 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       Timer(Duration(seconds: 3), () {
         removeAllCartItem(widget.user.token);
       });
-      // sendEmail(
-      //   email: widget.user.email,
-      //   name: widget.user.name,
-      //   orderId: response.body.toString().substring(1, 25),
-      //   totalPrice: totalPrice.toString(),
-      // );
+
+      if (useCoin == true) {
+        Timer(Duration(seconds: 3), () {
+          updateUserCoin(coin);
+        });
+      }
+      // Timer(Duration(seconds: 3), () {
+      //   sendEmail(
+      //     email: widget.user.email,
+      //     name: widget.user.name,
+      //     orderId: response.body.toString().substring(1, 25),
+      //     totalPrice: totalPrice.toString(),
+      //   );
+      // });
     } else {
       _showToast("Order created failed");
+    }
+  }
+
+  Future<void> updateUserCoin(double coin) async {
+    var response =
+        await http.put(Uri.parse("$baseUrl/api/users/coin/${widget.user.id}"),
+            headers: <String, String>{
+              'Authorization': 'Bearer ${widget.user.token}',
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode({
+              "coin": coin,
+            }));
+
+    if (response.statusCode == 200) {
+    } else {
+      _showToast("update user coin failed");
     }
   }
 
@@ -307,123 +337,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     SizedBox(height: SizeConfig.screenHeight * 0.01),
                     const CustomTitle(title: "Shipping Infomation"),
                     SizedBox(height: SizeConfig.screenHeight * 0.02),
-                    // Container(
-                    //   height: SizeConfig.screenHeight * 0.12,
-                    //   decoration: BoxDecoration(
-                    //     border: Border.all(color: Colors.black54),
-                    //     boxShadow: [
-                    //       BoxShadow(
-                    //           color: Colors.grey.shade200,
-                    //           blurRadius: 2.0,
-                    //           spreadRadius: 1.0),
-                    //     ],
-                    //     color: Colors.white,
-                    //     borderRadius: BorderRadius.circular(20.0),
-                    //   ),
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    //     child: Row(
-                    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //       crossAxisAlignment: CrossAxisAlignment.center,
-                    //       children: [
-                    //         Column(
-                    //           mainAxisAlignment: MainAxisAlignment.center,
-                    //           crossAxisAlignment: CrossAxisAlignment.start,
-                    //           children: [
-                    //             SizedBox(
-                    //               width: SizeConfig.screenWidth * 0.75,
-                    //               child: Text("$fullAddress"),
-                    //             )
-                    //           ],
-                    //         ),
-                    //         GestureDetector(
-                    //           onTap: () {
-                    //             showModalBottomSheet<void>(
-                    //               context: context,
-                    //               builder: (BuildContext context) {
-                    //                 return Container(
-                    //                   height: 700,
-                    //                   color: Colors.white,
-                    //                   child: Center(
-                    //                     child: Padding(
-                    //                       padding: EdgeInsets.only(
-                    //                         left:
-                    //                             getProportionateScreenWidth(18),
-                    //                         right:
-                    //                             getProportionateScreenWidth(18),
-                    //                       ),
-                    //                       child: Form(
-                    //                         key: _formKey,
-                    //                         child: Column(
-                    //                           mainAxisSize: MainAxisSize.min,
-                    //                           children: <Widget>[
-                    //                             addressFormInput(),
-                    //                             SizedBox(
-                    //                                 height: SizeConfig
-                    //                                         .screenHeight *
-                    //                                     0.03),
-                    //                             cityFormInput(),
-                    //                             SizedBox(
-                    //                                 height: SizeConfig
-                    //                                         .screenHeight *
-                    //                                     0.03),
-                    //                             countryFormInput(),
-                    //                             SizedBox(
-                    //                                 height: SizeConfig
-                    //                                         .screenHeight *
-                    //                                     0.03),
-                    //                             postalCodeFormInput(),
-                    //                             SizedBox(
-                    //                                 height: SizeConfig
-                    //                                         .screenHeight *
-                    //                                     0.02),
-                    //                             FormError(errors: errors),
-                    //                             SizedBox(
-                    //                               width:
-                    //                                   SizeConfig.screenWidth *
-                    //                                       0.89,
-                    //                               height:
-                    //                                   getProportionateScreenHeight(
-                    //                                       45),
-                    //                               child: ElevatedButton(
-                    //                                   child:
-                    //                                       const Text('Submit'),
-                    //                                   onPressed: () {
-                    //                                     if (_formKey
-                    //                                         .currentState!
-                    //                                         .validate()) {
-                    //                                       _formKey.currentState!
-                    //                                           .save();
-                    //                                       KeyboardUtil
-                    //                                           .hideKeyboard(
-                    //                                               context);
-                    //                                       setState(() {
-                    //                                         fullAddress =
-                    //                                             "${addressController.text}, ${cityController.text}, ${countryController.text}, ${postalCodeController.text}";
-                    //                                       });
-                    //                                       Navigator.pop(
-                    //                                           context);
-                    //                                     }
-                    //                                   }),
-                    //                             )
-                    //                           ],
-                    //                         ),
-                    //                       ),
-                    //                     ),
-                    //                   ),
-                    //                 );
-                    //               },
-                    //             );
-                    //           },
-                    //           child: const Icon(
-                    //             Icons.chevron_right,
-                    //             color: kPrimaryColor,
-                    //           ),
-                    //         )
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
                     addressFormInput(),
                     SizedBox(height: SizeConfig.screenHeight * 0.03),
                     cityFormInput(),
@@ -444,6 +357,59 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                             (index) => OrderItemCard(cart: widget.list[index])),
                       ],
                     ),
+                    const CustomTitle(title: "Your coin"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Checkbox(
+                          value: useCoin,
+                          activeColor: kPrimaryColor,
+                          onChanged: (value) {
+                            setState(() {
+                              useCoin = value!;
+                              if (useCoin == true) {
+                                if (widget.user.coin >= totalPrice!) {
+                                  coin = totalPrice!;
+                                  discountPrice += totalPrice!;
+                                } else {
+                                  discountPrice += widget.user.coin;
+                                  coin = widget.user.coin;
+                                }
+                                calSum();
+                              } else {
+                                if (discountPercen != "0") {
+                                  discountPrice = itemsprice *
+                                      double.parse(discountPercen) /
+                                      100;
+                                  discountPrice = double.parse(
+                                      discountPrice.toStringAsFixed(2));
+                                  calSum();
+                                } else {
+                                  discountPrice = 0;
+                                  calSum();
+                                }
+                                coin = 0;
+                              }
+                            });
+                          },
+                        ),
+                        Text("Use Coins",
+                            style: TextStyle(
+                              fontSize: getProportionateScreenWidth(14),
+                              color: Colors.black87,
+                            )),
+                        Spacer(),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              right: getProportionateScreenWidth(30)),
+                          child: Text("Coin : ${widget.user.coin}",
+                              style: TextStyle(
+                                fontSize: getProportionateScreenWidth(14),
+                                color: Colors.black87,
+                              )),
+                        ),
+                      ],
+                    ),
                     const CustomTitle(title: "Shipping Price "),
                     SizedBox(height: SizeConfig.screenHeight * 0.01),
                     Padding(
@@ -459,10 +425,10 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                             title: "Shipping Price :",
                             price: shippingPrice,
                           ),
-                          (discountPercen != "0")
+                          (discountPrice != 0)
                               ? SizedBox(height: 8)
                               : SizedBox(),
-                          (discountPercen != "0")
+                          (discountPrice != 0)
                               ? PriceRow(
                                   title: "Discount Price :",
                                   price: -discountPrice,
@@ -632,7 +598,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                               itemsprice,
                               taxPrice,
                               shippingPrice,
-                              discountPrice,
+                              double.parse(discountPrice.toStringAsFixed(2)),
                               totalPrice);
                         }
                       },

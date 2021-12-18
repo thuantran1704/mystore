@@ -12,6 +12,8 @@ class ProductListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
+
       appBar: AppBar(
         backgroundColor: backgroudColor,
         iconTheme: const IconThemeData(color: Colors.white),

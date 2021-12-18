@@ -99,6 +99,50 @@ class _OrderScreenState extends State<OrderScreen> {
     }
   }
 
+  Future<void> returnOrderByUser() async {
+    setState(() {
+      loading = true;
+    });
+    final response = await http.put(
+        Uri.parse("$baseUrl/api/orders/${widget.orderId}/return"),
+        headers: {
+          'Authorization': 'Bearer ${widget.user.token}',
+          "Accept": "application/json"
+        });
+
+    if (response.statusCode == 200) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  OrderScreen(orderId: widget.orderId, user: widget.user)));
+    } else {
+      throw Exception('Unable to update order from the REST API');
+    }
+  }
+
+  Future<void> returnOrderByAdmin() async {
+    setState(() {
+      loading = true;
+    });
+    final response = await http.put(
+        Uri.parse("$baseUrl/api/orders/${widget.orderId}/returned"),
+        headers: {
+          'Authorization': 'Bearer ${widget.user.token}',
+          "Accept": "application/json"
+        });
+
+    if (response.statusCode == 200) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  OrderScreen(orderId: widget.orderId, user: widget.user)));
+    } else {
+      throw Exception('Unable to update order from the REST API');
+    }
+  }
+
   Future<void> markAsReceived() async {
     setState(() {
       loading = true;
@@ -300,13 +344,41 @@ class _OrderScreenState extends State<OrderScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Order ID :    ${order.id}",
-                            style: TextStyle(
-                              fontSize: getProportionateScreenWidth(15),
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    "Order ID :",
+                                    style: TextStyle(
+                                      fontSize:
+                                          getProportionateScreenWidth(15.5),
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    right: getProportionateScreenWidth(35)),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      order.id,
+                                      style: TextStyle(
+                                        fontSize:
+                                            getProportionateScreenWidth(15.5),
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                           SizedBox(height: getProportionateScreenHeight(6)),
                           PriceRow(
@@ -376,7 +448,7 @@ class _OrderScreenState extends State<OrderScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                          width: getProportionateScreenWidth(300),
+                          width: SizeConfig.screenWidth * 0.87,
                           child: (order.status.toLowerCase() == "pay" &&
                                   widget.user.role.name.toLowerCase() !=
                                       "admin")
@@ -569,39 +641,180 @@ class _OrderScreenState extends State<OrderScreen> {
                                                   widget.user.role.name
                                                           .toLowerCase() !=
                                                       "admin")
-                                              ? DefaultButton(
-                                                  text: "Mark as Received",
-                                                  press: () => showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext
-                                                              context) =>
-                                                          AlertDialog(
-                                                            title: const Text(
-                                                                "Confirm"),
-                                                            content: const Text(
-                                                                "If you confirm received, this order will complete and can not refund !"),
-                                                            actions: <Widget>[
-                                                              TextButton(
-                                                                onPressed: () =>
-                                                                    Navigator.pop(
-                                                                        context,
-                                                                        'Cancel'),
-                                                                child: const Text(
-                                                                    'Cancel'),
-                                                              ),
-                                                              TextButton(
-                                                                  child:
-                                                                      const Text(
-                                                                          'OK'),
-                                                                  onPressed:
-                                                                      () => {
-                                                                            Navigator.pop(context,
-                                                                                'OK'),
-                                                                            markAsReceived(),
-                                                                          }),
-                                                            ],
-                                                          )))
-                                              : null,
+                                              ? Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    SizedBox(
+                                                      width:
+                                                          getProportionateScreenHeight(
+                                                              140),
+                                                      height:
+                                                          getProportionateScreenHeight(
+                                                              50),
+                                                      child: TextButton(
+                                                        style: TextButton
+                                                            .styleFrom(
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20)),
+                                                          primary: Colors.white,
+                                                          backgroundColor:
+                                                              kPrimaryColor,
+                                                        ),
+                                                        onPressed: () {
+                                                          showDialog(
+                                                              context: context,
+                                                              builder: (BuildContext
+                                                                      context) =>
+                                                                  AlertDialog(
+                                                                    title: const Text(
+                                                                        "Confirm"),
+                                                                    content:
+                                                                        const Text(
+                                                                            "Are you sure to return this order?"),
+                                                                    actions: <
+                                                                        Widget>[
+                                                                      TextButton(
+                                                                        onPressed: () => Navigator.pop(
+                                                                            context,
+                                                                            'No'),
+                                                                        child: const Text(
+                                                                            'No'),
+                                                                      ),
+                                                                      TextButton(
+                                                                          child: const Text(
+                                                                              'Yes'),
+                                                                          onPressed: () =>
+                                                                              {
+                                                                                Navigator.pop(context, 'Yes'),
+                                                                                returnOrderByUser(),
+                                                                              }),
+                                                                    ],
+                                                                  ));
+                                                        },
+                                                        child: Text(
+                                                          "Return",
+                                                          style: TextStyle(
+                                                            fontSize:
+                                                                getProportionateScreenWidth(
+                                                                    18),
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 2,
+                                                    ),
+                                                    SizedBox(
+                                                        width:
+                                                            getProportionateScreenHeight(
+                                                                190),
+                                                        height:
+                                                            getProportionateScreenHeight(
+                                                                50),
+                                                        child: TextButton(
+                                                          style: TextButton
+                                                              .styleFrom(
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20)),
+                                                            primary:
+                                                                Colors.white,
+                                                            backgroundColor:
+                                                                kPrimaryColor,
+                                                          ),
+                                                          onPressed: () {
+                                                            showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder: (BuildContext
+                                                                        context) =>
+                                                                    AlertDialog(
+                                                                      title: const Text(
+                                                                          "Confirm"),
+                                                                      content:
+                                                                          const Text(
+                                                                              "If you confirm received, this order will complete and can not return!"),
+                                                                      actions: <
+                                                                          Widget>[
+                                                                        TextButton(
+                                                                          onPressed: () => Navigator.pop(
+                                                                              context,
+                                                                              'No'),
+                                                                          child:
+                                                                              const Text('No'),
+                                                                        ),
+                                                                        TextButton(
+                                                                            child:
+                                                                                const Text('Yes'),
+                                                                            onPressed: () => {
+                                                                                  Navigator.pop(context, 'Yes'),
+                                                                                  markAsReceived(),
+                                                                                }),
+                                                                      ],
+                                                                    ));
+                                                          },
+                                                          child: Text(
+                                                            "Mark as Received",
+                                                            style: TextStyle(
+                                                              fontSize:
+                                                                  getProportionateScreenWidth(
+                                                                      18),
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                          ),
+                                                        )),
+                                                  ],
+                                                )
+                                              : (order.status.toLowerCase() ==
+                                                          "return" &&
+                                                      widget.user.role.name
+                                                              .toLowerCase() ==
+                                                          "admin")
+                                                  ? DefaultButton(
+                                                      text: "Mark as Returned",
+                                                      press: () => showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              AlertDialog(
+                                                                title: const Text(
+                                                                    "Confirm"),
+                                                                content: const Text(
+                                                                    "Are you sure to mark returned this order?"),
+                                                                actions: <
+                                                                    Widget>[
+                                                                  TextButton(
+                                                                    onPressed: () =>
+                                                                        Navigator.pop(
+                                                                            context,
+                                                                            'No'),
+                                                                    child:
+                                                                        const Text(
+                                                                            'No'),
+                                                                  ),
+                                                                  TextButton(
+                                                                      child: const Text(
+                                                                          'Yes'),
+                                                                      onPressed:
+                                                                          () =>
+                                                                              {
+                                                                                Navigator.pop(context, 'Yes'),
+                                                                                returnOrderByAdmin(),
+                                                                              }),
+                                                                ],
+                                                              )))
+                                                  : null,
                         ),
                       ],
                     ),
@@ -640,7 +853,7 @@ class PriceRow extends StatelessWidget {
           ],
         ),
         Padding(
-          padding: EdgeInsets.only(right: getProportionateScreenWidth(55)),
+          padding: EdgeInsets.only(right: getProportionateScreenWidth(35)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [

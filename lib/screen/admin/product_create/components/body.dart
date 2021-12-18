@@ -212,8 +212,8 @@ class _BodyState extends State<Body> {
           : SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.only(
-                    left: getProportionateScreenWidth(18),
-                    right: getProportionateScreenWidth(18),
+                    left: getProportionateScreenWidth(20),
+                    right: getProportionateScreenWidth(15),
                     top: getProportionateScreenHeight(18)),
                 child: Form(
                   key: _formKey,
@@ -222,17 +222,61 @@ class _BodyState extends State<Body> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      NameFormInput(),
-                      SizedBox(height: SizeConfig.screenHeight * 0.03),
-                      PriceFormInput(),
-                      SizedBox(height: SizeConfig.screenHeight * 0.03),
-                      descriptionFormInput(),
-                      SizedBox(height: SizeConfig.screenHeight * 0.03),
+                      // NameFormInput(),
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(.2),
+                                blurRadius: 1,
+                                spreadRadius: 1,
+                                offset: const Offset(3, 2),
+                              ),
+                            ]),
+                        child: NameFormInput(),
+                      ),
+                      SizedBox(height: SizeConfig.screenHeight * 0.025),
+                      Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(.2),
+                                  blurRadius: 1,
+                                  spreadRadius: 1,
+                                  offset: const Offset(3, 2),
+                                ),
+                              ]),
+                          child: PriceFormInput()),
+                      SizedBox(height: SizeConfig.screenHeight * 0.025),
+                      Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(.2),
+                                  blurRadius: 1,
+                                  spreadRadius: 1,
+                                  offset: const Offset(3, 2),
+                                ),
+                              ]),
+                          child: descriptionFormInput()),
+                      SizedBox(height: SizeConfig.screenHeight * 0.025),
                       DropdownBrandCate(),
-                      SizedBox(height: SizeConfig.screenHeight * 0.03),
+                      (errors.isNotEmpty)
+                          ? SizedBox(height: SizeConfig.screenHeight * 0.01)
+                          : const SizedBox(),
                       FormError(errors: errors),
-                      SizedBox(height: SizeConfig.screenHeight * 0.03),
+                      SizedBox(height: SizeConfig.screenHeight * 0.02),
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text("Product Images:",
                               style: TextStyle(
@@ -245,21 +289,65 @@ class _BodyState extends State<Body> {
                                       children: [
                                         ...List.generate(
                                           images.length,
-                                          (index) => SizedBox(
-                                            width: 120,
-                                            height: 120,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Image.file(
-                                                images[index],
-                                              ),
+                                          (index) => Padding(
+                                            padding: EdgeInsets.only(
+                                                right:
+                                                    getProportionateScreenWidth(
+                                                        12)),
+                                            child: Stack(
+                                              children: [
+                                                Container(
+                                                  width: 120,
+                                                  height: 120,
+                                                  margin: EdgeInsets.only(
+                                                      top:
+                                                          getProportionateScreenHeight(
+                                                              15),
+                                                      right:
+                                                          getProportionateScreenWidth(
+                                                              10)),
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.grey
+                                                              .withOpacity(.2),
+                                                          blurRadius: 1,
+                                                          spreadRadius: 1,
+                                                          offset: const Offset(
+                                                              2, 1),
+                                                        ),
+                                                      ]),
+                                                  child: Image.file(
+                                                    images[index],
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  top: 0,
+                                                  right: -3,
+                                                  child: InkWell(
+                                                    splashColor: Colors.red,
+                                                    onTap: () {
+                                                      setState(() {
+                                                        images.removeAt(index);
+                                                        uploaded
+                                                            .removeAt(index);
+                                                      });
+                                                    },
+                                                    child: Icon(
+                                                        Icons.cancel_rounded,
+                                                        size: 26,
+                                                        color: Colors.deepOrange
+                                                            .shade500),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ),
                                         SizedBox(
-                                            width: getProportionateScreenWidth(
-                                                10)),
+                                            width:
+                                                getProportionateScreenWidth(5)),
                                         InkWell(
                                           onTap: () {
                                             getImage();
@@ -301,21 +389,26 @@ class _BodyState extends State<Body> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SizedBox(
-                                  width: getProportionateScreenWidth(250),
+                                  width: SizeConfig.screenWidth * 0.8,
                                   child: DefaultButton(
                                     text: "Create Product",
                                     press: () {
                                       if (_formKey.currentState!.validate()) {
                                         _formKey.currentState!.save();
                                         KeyboardUtil.hideKeyboard(context);
-                                        createProduct(
-                                          uploaded,
-                                          nameController.text,
-                                          descriptionController.text,
-                                          double.parse(priceController.text),
-                                          dropdownBrandValue.toString(),
-                                          dropdownCateValue.toString(),
-                                        );
+                                        if (uploaded.isEmpty) {
+                                          _showToast(
+                                              "Please add at least an image for this product!");
+                                        } else {
+                                          createProduct(
+                                            uploaded,
+                                            nameController.text,
+                                            descriptionController.text,
+                                            double.parse(priceController.text),
+                                            dropdownBrandValue.toString(),
+                                            dropdownCateValue.toString(),
+                                          );
+                                        }
                                       }
                                     },
                                   ),
@@ -324,7 +417,8 @@ class _BodyState extends State<Body> {
                             ),
                           ],
                         ),
-                      )
+                      ),
+                      SizedBox(height: SizeConfig.screenHeight * 0.02),
                     ],
                   ),
                 ),
@@ -345,10 +439,6 @@ class _BodyState extends State<Body> {
         }
         return;
       },
-      // onEditingComplete: () {
-      //   print("addressController.text " + addressController.text);
-      // },
-
       validator: (value) {
         if (value!.isEmpty) {
           addError(error: kProductNameNullError);
@@ -359,6 +449,10 @@ class _BodyState extends State<Body> {
       decoration: const InputDecoration(
         labelText: "Name",
         hintText: "Enter product name",
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
         floatingLabelBehavior: FloatingLabelBehavior.always,
         // suffixIcon:
         //     CustomSurfixIcon(svgIcon: "assets/icons/Location point.svg"),
@@ -389,6 +483,10 @@ class _BodyState extends State<Body> {
       decoration: const InputDecoration(
         labelText: "Price",
         hintText: "Enter product price",
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
         floatingLabelBehavior: FloatingLabelBehavior.always,
         // border: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
         // focusedBorder: UnderlineInputBorder(
@@ -409,13 +507,13 @@ class _BodyState extends State<Body> {
       maxLines: 3,
       onChanged: (value) {
         if (value.isNotEmpty) {
-          removeError(error: kCityNullError);
+          removeError(error: kProductDescriptionNullError);
         }
         return;
       },
       validator: (value) {
         if (value!.isEmpty) {
-          addError(error: kCityNullError);
+          addError(error: kProductDescriptionNullError);
           return "required";
         }
         return null;
@@ -423,6 +521,10 @@ class _BodyState extends State<Body> {
       decoration: const InputDecoration(
         labelText: "Description",
         hintText: "Enter product description",
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
         floatingLabelBehavior: FloatingLabelBehavior.always,
         // suffixIcon:
         //     CustomSurfixIcon(svgIcon: "assets/icons/Location point.svg"),
@@ -444,10 +546,18 @@ class _BodyState extends State<Body> {
                 ),
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                   decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(10)),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(.2),
+                          blurRadius: 1,
+                          spreadRadius: 1,
+                          offset: const Offset(3, 2),
+                        ),
+                      ]),
                   child: DropdownButton<String>(
                     value: dropdownBrandValue,
                     icon: const Icon(Icons.arrow_downward),
@@ -456,7 +566,7 @@ class _BodyState extends State<Body> {
                     style: const TextStyle(color: Colors.black),
                     underline: Container(
                       height: 2,
-                      color: Colors.black,
+                      color: Colors.black45,
                       margin: EdgeInsets.only(
                           right: getProportionateScreenWidth(18)),
                     ),
@@ -491,10 +601,18 @@ class _BodyState extends State<Body> {
                 ),
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                   decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(10)),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(.2),
+                          blurRadius: 1,
+                          spreadRadius: 1,
+                          offset: const Offset(3, 2),
+                        ),
+                      ]),
                   child: DropdownButton<String>(
                     value: dropdownCateValue,
                     icon: const Icon(Icons.arrow_downward),
@@ -503,7 +621,7 @@ class _BodyState extends State<Body> {
                     style: const TextStyle(color: Colors.black),
                     underline: Container(
                       height: 2,
-                      color: Colors.black,
+                      color: Colors.black45,
                       margin: EdgeInsets.only(
                           right: getProportionateScreenWidth(18)),
                     ),

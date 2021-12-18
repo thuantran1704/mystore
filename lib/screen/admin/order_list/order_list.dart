@@ -16,7 +16,7 @@ class _OrdertListScreenState extends State<OrdertListScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 6,
+      length: 8,
       child: Scaffold(
         appBar: buildAppBar(),
         drawer: DrawerMenu(
@@ -58,6 +58,8 @@ class _OrdertListScreenState extends State<OrdertListScreen> {
           Text("Wait", style: TextStyle(fontSize: 16)),
           Text("Delivery", style: TextStyle(fontSize: 16)),
           Text("Completed", style: TextStyle(fontSize: 16)),
+          Text("Return", style: TextStyle(fontSize: 16)),
+          Text("Returned", style: TextStyle(fontSize: 16)),
           Text("Cancelled", style: TextStyle(fontSize: 16)),
         ],
       ),

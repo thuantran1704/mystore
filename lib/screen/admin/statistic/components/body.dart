@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:mystore/constants.dart';
+import 'package:mystore/models/order.dart';
 import 'package:mystore/models/statistic.dart';
 import 'package:mystore/models/user.dart';
 import 'package:mystore/size_config.dart';
@@ -22,6 +23,9 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   List<Result> list = [];
+  List<Order> listOrder = [];
+  Result rs = Result(name: "name", sold: 0);
+  int index = -1;
   double sum = 0;
   var loading = false;
   final baseUrl = "https://mystore-backend.herokuapp.com";
@@ -63,10 +67,12 @@ class _BodyState extends State<Body> {
   Future<void> getStatisticData(String dateFrom, String dateTo) async {
     setState(() {
       loading = true;
+      listOrder = [];
+      list = [];
     });
 
     var response =
-        await http.post(Uri.parse("$baseUrl/api/statistic/productbetween"),
+        await http.post(Uri.parse("$baseUrl/api/statistic/orderbetween"),
             headers: <String, String>{
               'Authorization': 'Bearer ${widget.user.token}',
               'Content-Type': 'application/json; charset=UTF-8',
@@ -75,9 +81,23 @@ class _BodyState extends State<Body> {
 
     if (response.statusCode == 200) {
       setState(() {
-        Statistic statistic = statisticFromJson(response.body);
-        list = statistic.result;
-        sum = statistic.sum;
+        listOrder = parseOrders(response.body);
+        for (int i = 0; i < listOrder.length; i++) {
+          for (int j = 0; j < listOrder[i].orderItems.length; j++) {
+            index = -1;
+            rs = Result(
+                name: listOrder[i].orderItems[j].product.name,
+                sold: listOrder[i].orderItems[j].qty);
+            index = list.indexWhere((element) => element.name == rs.name);
+            if (index != -1) {
+              list[index].sold += listOrder[i].orderItems[j].qty;
+            } else {
+              list.add(rs);
+            }
+          }
+        }
+        list.sort((a, b) => b.sold.compareTo(a.sold));
+
         loading = false;
       });
     } else {

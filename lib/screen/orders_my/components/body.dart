@@ -172,13 +172,33 @@ class _BodyState extends State<Body> {
                                                                   color: Colors
                                                                       .green,
                                                                 )
-                                                              : StatusMyOrdersCard(
-                                                                  status:
-                                                                      "Cancelled",
-                                                                  color: Colors
-                                                                      .red
-                                                                      .shade900,
-                                                                )
+                                                              : (list[index]
+                                                                          .status
+                                                                          .toLowerCase() ==
+                                                                      "return")
+                                                                  ? const StatusMyOrdersCard(
+                                                                      status:
+                                                                          "Requesting Return",
+                                                                      color: Colors
+                                                                          .deepOrange,
+                                                                    )
+                                                                  : (list[index]
+                                                                              .status
+                                                                              .toLowerCase() ==
+                                                                          "returned")
+                                                                      ? const StatusMyOrdersCard(
+                                                                          status:
+                                                                              "Returned",
+                                                                          color:
+                                                                              Colors.deepOrange,
+                                                                        )
+                                                                      : StatusMyOrdersCard(
+                                                                          status:
+                                                                              "Cancelled",
+                                                                          color: Colors
+                                                                              .red
+                                                                              .shade900,
+                                                                        )
                                             ],
                                           ),
                                         ),

@@ -127,10 +127,10 @@ class _BodyState extends State<Body> {
                   onRefresh: getProductList,
                   child: ListView.builder(
                     padding: EdgeInsets.symmetric(
-                        horizontal: getProportionateScreenWidth(16)),
+                        horizontal: getProportionateScreenWidth(12)),
                     itemCount: list.length,
                     itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Slidable(
                         key: Key(list[index].id.toString()),
                         controller: slidableController,
@@ -199,16 +199,19 @@ class VerticalListItem extends StatelessWidget {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-                color: Colors.grey.shade300,
-                blurRadius: 2.0,
+                color: Colors.grey.shade200,
+                // blurRadius: 2.0,
                 spreadRadius: 1.0),
           ],
-          color: Colors.grey[50],
+          color: Colors.white,
           borderRadius: BorderRadius.circular(14.0),
         ),
         // color: Colors.white,
-        child: ProductItemCard(
-          product: product,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ProductItemCard(
+            product: product,
+          ),
         ),
       ),
     );
