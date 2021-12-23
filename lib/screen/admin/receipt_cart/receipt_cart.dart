@@ -95,13 +95,13 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
           TextEditingController priceController = TextEditingController();
           TextEditingController qtyController = TextEditingController();
 
-          priceController.text = list[i].product.price.toString();
+          priceController.text = list[i].importPrice.toString();
           qtyController.text = list[i].qty.toString();
 
           myPriceController.add(priceController);
           myQtyController.add(qtyController);
 
-          total = total + (list[i].product.price * list[i].qty);
+          total = total + (list[i].importPrice * list[i].qty);
         }
 
         loading = false;
@@ -136,7 +136,7 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
           'Authorization': 'Bearer ${widget.user.token}',
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(<String, double>{"qty": qty, "price": price}));
+        body: jsonEncode(<String, double>{"qty": qty, "importPrice": price}));
 
     if (response.statusCode == 201) {
     } else {
@@ -219,7 +219,7 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
                       itemBuilder: (context, index) => Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         child: Dismissible(
-                          key: Key(list[index].product.toString()),
+                          key: Key(list[index].product.id.toString()),
                           direction: DismissDirection.endToStart,
                           background: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -236,7 +236,7 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
                           ),
                           onDismissed: (direction) {
                             setState(() {
-                              removeCartItem(list[index].product.toString(),
+                              removeCartItem(list[index].product.id.toString(),
                                   widget.user.token);
                               loading = false;
 
@@ -335,9 +335,7 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
                                                     setState(() {
                                                       myPriceController[index]
                                                           .text = value;
-                                                      list[index]
-                                                              .product
-                                                              .price =
+                                                      list[index].importPrice =
                                                           double.parse(
                                                               myPriceController[
                                                                       index]
@@ -348,9 +346,7 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
                                                     setState(() {
                                                       myPriceController[index]
                                                           .text = "1";
-                                                      list[index]
-                                                              .product
-                                                              .price =
+                                                      list[index].importPrice =
                                                           double.parse(
                                                               myPriceController[
                                                                       index]
@@ -364,9 +360,7 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
                                                   updateCartItem(
                                                       list[index].product.id,
                                                       0,
-                                                      list[index]
-                                                          .product
-                                                          .price);
+                                                      list[index].importPrice);
                                                 },
                                                 validator: (value) {
                                                   if (value!.isEmpty) {

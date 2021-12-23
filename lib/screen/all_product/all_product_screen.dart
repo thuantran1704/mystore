@@ -193,7 +193,7 @@ class _AllProductScreenState extends State<AllProductScreen> {
                   )
                 : (widget.keyword != null)
                     ? Text(
-                        "Searching ${widget.keyword}",
+                        "Searching \"${widget.keyword}\"",
                         style: TextStyle(color: Colors.black),
                       )
                     : Text(

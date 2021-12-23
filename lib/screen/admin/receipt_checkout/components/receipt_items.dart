@@ -77,7 +77,7 @@ class ReceiptItemCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text.rich(
                 TextSpan(
-                  text: "\$${item.product.price.toString()}",
+                  text: "\$${item.importPrice.toString()}",
                   style: const TextStyle(fontWeight: FontWeight.w600),
                   children: [
                     TextSpan(

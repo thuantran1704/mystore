@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mystore/constants.dart';
 import 'package:mystore/models/user.dart';
 import 'package:mystore/screen/all_product/all_product_screen.dart';
@@ -23,6 +24,14 @@ class _HomeHeaderState extends State<HomeHeader> {
 
   @override
   Widget build(BuildContext context) {
+    String replaceWhitespacesUsingRegex(String s, String replace) {
+      // This pattern means "at least one space, or more"
+      // \\s : space
+      // +   : one or more
+      var pattern = RegExp('\\s+');
+      return s.replaceAll(pattern, replace);
+    }
+
     return Padding(
       padding:
           EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
@@ -30,7 +39,7 @@ class _HomeHeaderState extends State<HomeHeader> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            width: SizeConfig.screenWidth * 0.75, //60% of width
+            width: SizeConfig.screenWidth * 0.75, //75% of width
             // height: 50,
             decoration: BoxDecoration(
               color: kSecondaryColor.withOpacity(0.1),
@@ -38,13 +47,17 @@ class _HomeHeaderState extends State<HomeHeader> {
             ),
             child: TextField(
               controller: keywordController,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z ]")),
+              ],
               onEditingComplete: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => AllProductScreen(
                               user: widget.user,
-                              keyword: keywordController.text.trim(),
+                              keyword: replaceWhitespacesUsingRegex(
+                                  keywordController.text.trim(), ' '),
                             )));
               },
               decoration: InputDecoration(

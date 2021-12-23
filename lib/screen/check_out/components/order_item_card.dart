@@ -23,7 +23,7 @@ class OrderItemCard extends StatelessWidget {
             child: AspectRatio(
               aspectRatio: 1,
               child: Container(
-                padding: const EdgeInsets.all(6),
+                padding: EdgeInsets.all(getProportionateScreenWidth(2.5)),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: Colors.grey.shade400,

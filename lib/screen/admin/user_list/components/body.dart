@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:mystore/constants.dart';
 import 'package:mystore/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:mystore/screen/admin/user_edit/user_edit.dart';
@@ -108,7 +109,10 @@ class _BodyState extends State<Body> {
               ? Padding(
                   padding:
                       EdgeInsets.only(top: getProportionateScreenHeight(20)),
-                  child: const Center(child: CircularProgressIndicator()),
+                  child: const Center(
+                      child: CircularProgressIndicator(
+                    color: kPrimaryColor,
+                  )),
                 )
               : list.isEmpty
                   ? Row(

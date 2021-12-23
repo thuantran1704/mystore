@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -142,14 +141,14 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           updateUserCoin(coin);
         });
       }
-      // Timer(Duration(seconds: 3), () {
-      //   sendEmail(
-      //     email: widget.user.email,
-      //     name: widget.user.name,
-      //     orderId: response.body.toString().substring(1, 25),
-      //     totalPrice: totalPrice.toString(),
-      //   );
-      // });
+      Timer(Duration(seconds: 3), () {
+        sendEmail(
+          email: widget.user.email,
+          name: widget.user.name,
+          orderId: response.body.toString().substring(1, 25),
+          totalPrice: totalPrice.toString(),
+        );
+      });
     } else {
       _showToast("Order created failed");
     }
@@ -237,11 +236,11 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           'user_id': userEmailId,
           'template_params': {
             'user_name': name, // tên ng nhận
-            'user_email': email, // email ng gửi
+            'user_email': "mystore@gmail.com", // email ng gửi
             'to_email': "thuantran1704@gmail.com", // email nhận
             'user_subject': "MyStore",
             'user_message':
-                "Thank you for your order. \nYour order id is $orderId with total price: $totalPrice\$"
+                "Thank you for your order. \nYour order id is $orderId with total price: $totalPrice\$ \nWe will process your order within 36 hours from now"
           }
         }));
     if (response.statusCode == 200) {
@@ -314,6 +313,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
@@ -327,7 +327,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           width: double.infinity,
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: getProportionateScreenWidth(18)),
+                horizontal: getProportionateScreenWidth(15)),
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Form(
@@ -336,14 +336,70 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   children: [
                     SizedBox(height: SizeConfig.screenHeight * 0.01),
                     const CustomTitle(title: "Shipping Infomation"),
-                    SizedBox(height: SizeConfig.screenHeight * 0.02),
-                    addressFormInput(),
-                    SizedBox(height: SizeConfig.screenHeight * 0.03),
-                    cityFormInput(),
-                    SizedBox(height: SizeConfig.screenHeight * 0.03),
-                    countryFormInput(),
-                    SizedBox(height: SizeConfig.screenHeight * 0.03),
-                    postalCodeFormInput(),
+                    SizedBox(height: SizeConfig.screenHeight * 0.015),
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(.2),
+                              blurRadius: 1,
+                              spreadRadius: 1,
+                              offset: const Offset(3, 2),
+                            ),
+                          ]),
+                      child: addressFormInput(),
+                    ),
+                    SizedBox(height: SizeConfig.screenHeight * 0.015),
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(.2),
+                              blurRadius: 1,
+                              spreadRadius: 1,
+                              offset: const Offset(3, 2),
+                            ),
+                          ]),
+                      child: cityFormInput(),
+                    ),
+                    SizedBox(height: SizeConfig.screenHeight * 0.015),
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(.2),
+                              blurRadius: 1,
+                              spreadRadius: 1,
+                              offset: const Offset(3, 2),
+                            ),
+                          ]),
+                      child: countryFormInput(),
+                    ),
+                    SizedBox(height: SizeConfig.screenHeight * 0.015),
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(.2),
+                              blurRadius: 1,
+                              spreadRadius: 1,
+                              offset: const Offset(3, 2),
+                            ),
+                          ]),
+                      child: postalCodeFormInput(),
+                    ),
                     SizedBox(height: SizeConfig.screenHeight * 0.02),
                     FormError(errors: errors),
                     SizedBox(height: SizeConfig.screenHeight * 0.01),
@@ -666,6 +722,10 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       decoration: const InputDecoration(
         labelText: "Address",
         hintText: "Enter your Address",
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
         floatingLabelBehavior: FloatingLabelBehavior.always,
         // suffixIcon:
         //     CustomSurfixIcon(svgIcon: "assets/icons/Location point.svg"),
@@ -693,6 +753,10 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       decoration: const InputDecoration(
         labelText: "City",
         hintText: "Enter your City",
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
         floatingLabelBehavior: FloatingLabelBehavior.always,
         // suffixIcon:
         //     CustomSurfixIcon(svgIcon: "assets/icons/Location point.svg"),
@@ -720,6 +784,10 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       decoration: const InputDecoration(
         labelText: "Country",
         hintText: "Enter your Country",
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
         floatingLabelBehavior: FloatingLabelBehavior.always,
         // suffixIcon:
         //     CustomSurfixIcon(svgIcon: "assets/icons/Location point.svg"),
@@ -747,6 +815,10 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       decoration: const InputDecoration(
         labelText: "PostalCode",
         hintText: "Enter your PostalCode",
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
         floatingLabelBehavior: FloatingLabelBehavior.always,
         // suffixIcon:
         //     CustomSurfixIcon(svgIcon: "assets/icons/Location point.svg"),

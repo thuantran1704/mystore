@@ -38,7 +38,7 @@ class _OrderItemCardState extends State<OrderItemCard> {
     String comment,
   ) async {
     var response = await http.post(
-        Uri.parse("$baseUrl/api/products/${widget.item.product}/reviews"),
+        Uri.parse("$baseUrl/api/products/${widget.item.product.id}/reviews"),
         headers: <String, String>{
           'Authorization': 'Bearer ${widget.user.token}',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -115,7 +115,8 @@ class _OrderItemCardState extends State<OrderItemCard> {
                       ],
                     ),
                   ),
-                  ((widget.status == 3 || widget.status == 4) &&
+                  ((widget.status.toLowerCase() == "delivered" ||
+                              widget.status.toLowerCase() == "received") &&
                           widget.user.role.name.toLowerCase() != "admin")
                       ? Padding(
                           padding: EdgeInsets.only(

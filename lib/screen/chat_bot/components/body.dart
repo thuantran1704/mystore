@@ -130,16 +130,26 @@ class ChatMessage extends StatelessWidget {
     return <Widget>[
       Container(
         margin: const EdgeInsets.only(right: 16.0),
-        child: CircleAvatar(child: Text('B')),
+        child: CircleAvatar(
+          child: Text(
+            'B',
+            style: TextStyle(color: Colors.black54),
+          ),
+          backgroundColor: Colors.blueAccent.shade100,
+        ),
       ),
       Expanded(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(name, style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(name,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
             Container(
               margin: const EdgeInsets.only(top: 5.0),
-              child: Text(text),
+              child: Text(
+                text,
+                style: TextStyle(fontSize: 15),
+              ),
             ),
           ],
         ),
@@ -153,10 +163,13 @@ class ChatMessage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
-            Text(name),
+            Text(
+              name,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            ),
             Container(
               margin: const EdgeInsets.only(top: 5.0),
-              child: Text(text),
+              child: Text(text, style: TextStyle(fontSize: 15)),
             ),
           ],
         ),

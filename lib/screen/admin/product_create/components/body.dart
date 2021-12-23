@@ -596,7 +596,7 @@ class _BodyState extends State<Body> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  "Category: ",
+                  "Cate: ",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                 ),
                 Container(

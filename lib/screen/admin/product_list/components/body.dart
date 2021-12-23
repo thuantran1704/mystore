@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mystore/constants.dart';
 import 'package:mystore/models/product.dart';
 import 'package:mystore/models/user.dart';
 import 'package:http/http.dart' as http;
@@ -66,7 +67,7 @@ class _BodyState extends State<Body> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-    print("response.statusCode : " + response.statusCode.toString());
+
     if (response.statusCode == 200) {
       _showToast("Delete product successful");
     } else {
@@ -114,7 +115,10 @@ class _BodyState extends State<Body> {
       child: loading
           ? Padding(
               padding: EdgeInsets.only(top: getProportionateScreenHeight(20)),
-              child: const Center(child: CircularProgressIndicator()),
+              child: const Center(
+                  child: CircularProgressIndicator(
+                color: kPrimaryColor,
+              )),
             )
           : list.isEmpty
               ? Row(
