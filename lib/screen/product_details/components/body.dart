@@ -188,6 +188,35 @@ class _BodyState extends State<Body> {
                                           }
                                           return;
                                         },
+                                        onSubmitted: (value) => {
+                                          if (value.isNotEmpty)
+                                            {
+                                              if (widget.product.countInStock >=
+                                                  int.parse(value.toString()))
+                                                {
+                                                  setState(() {
+                                                    qty = int.parse(
+                                                        qtyController.text);
+                                                  })
+                                                }
+                                              else
+                                                {
+                                                  qtyController.text = widget
+                                                      .product.countInStock
+                                                      .toString(),
+                                                  qty = (widget
+                                                      .product.countInStock)
+                                                }
+                                            }
+                                          else
+                                            {
+                                              setState(() {
+                                                qty = 1;
+                                                qtyController.text =
+                                                    qty.toString();
+                                              })
+                                            }
+                                        },
                                       ),
                                     ),
                                     SizedBox(

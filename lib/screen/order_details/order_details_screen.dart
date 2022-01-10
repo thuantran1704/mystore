@@ -602,6 +602,9 @@ class _OrderScreenState extends State<OrderScreen> {
                                                     ],
                                                   )))
                                       : (order.status.toLowerCase() == "wait" &&
+                                              order.paymentMethod
+                                                      .toLowerCase() !=
+                                                  "paypal" &&
                                               widget.user.role.name
                                                       .toLowerCase() !=
                                                   "admin")
@@ -609,8 +612,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                               text: "Cancel",
                                               press: () => showDialog(
                                                   context: context,
-                                                  builder: (BuildContext
-                                                          context) =>
+                                                  builder: (BuildContext context) =>
                                                       AlertDialog(
                                                         title: const Text(
                                                             "Confirm"),

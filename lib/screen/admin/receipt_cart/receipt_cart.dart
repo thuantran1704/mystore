@@ -45,7 +45,7 @@ class _ReceiptCartScreenState extends State<ReceiptCartScreen> {
   void calSum(List<Cart> list) {
     total = 0;
     for (int i = 0; i < list.length; i++) {
-      total = total + (list[i].product.price * list[i].qty);
+      total = total + (list[i].importPrice * list[i].qty);
     }
   }
 
